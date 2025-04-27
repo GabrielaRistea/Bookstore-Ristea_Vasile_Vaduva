@@ -1,0 +1,58 @@
+﻿@model Bookstore.DTOs.SendResetCodeDto
+
+@{
+    ViewData["Title"] = "SendResetCodeDto";
+}
+
+<div class="d-flex justify-content-center align-items-center vh-100">
+    <div class="card" style="width: 25rem; margin-bottom:5%">
+        <div class="card-body">
+            <h2 class="card-title text-center">Send Reset Code</h2>
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <form asp-action="SendResetCode" method="post">
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn btn-info btn-block">Send Reset Code</button>
+            </form>
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger mt-3">
+                    @TempData["Error"]
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<div id="codeModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5);">
+    <div class="modal-content" style="background:black; padding:20px; margin:10% auto; width:300px; border-radius:10px;">
+        <span class="close" onclick="closeModal()" style="float:right; cursor:pointer;">&times;</span>
+        <h3>Enter the code</h3>
+        <form asp-action="VerifyCode" method="post">
+            @Html.AntiForgeryToken()
+            <input type="text" name="code" maxlength="4" class="form-control" placeholder="4-digit code" required />
+            <button type="submit" class="btn btn-primary btn-block mt-2">Verify</button>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openModal() {
+        document.getElementById('codeModal').style.display = 'block';
+    }
+
+    function closeModal() {
+        document.getElementById('codeModal').style.display = 'none';
+    }
+
+    window.onload = function () {
+        var shouldOpen = '@TempData["OpenModal"]';
+        if (shouldOpen) {
+            openModal();
+        }
+    }
+</script>
