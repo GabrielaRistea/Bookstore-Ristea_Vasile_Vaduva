@@ -6,6 +6,9 @@ using Bookstore.DTOs;
 using System.Net.Mail;
 using System.Net;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Identity;
 
 namespace Bookstore.Controllers
 {
@@ -13,6 +16,8 @@ namespace Bookstore.Controllers
     {
         private readonly IAuthService _authService;
         private readonly IMailService _mailService;
+        private readonly object signInManager;
+
         public AccountController (IAuthService authService, IMailService mailService)
         {
             _authService = authService;
@@ -116,6 +121,17 @@ namespace Bookstore.Controllers
                 }
                 return View(loginRequest);
             }
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.NameIdentifier, authResult.UserId),
+                new Claim(ClaimTypes.Name, authResult.UserName)
+            };
+
+            var identity = new ClaimsIdentity(claims, "Cookies");
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(principal);
+
             return RedirectToAction("Index", "Home");
             //return Ok();
         }
@@ -217,6 +233,13 @@ namespace Bookstore.Controllers
             }
 
             TempData["Success"] = "Password changed successfully!";
+            return RedirectToAction("Login", "Account");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Logout()
+        {
+            await HttpContext.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
 
