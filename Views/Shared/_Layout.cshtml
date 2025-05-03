@@ -28,11 +28,50 @@
                                 <i class="fas fa-layer-group"></i> Categories
                             </a>
                             <ul class="dropdown-menu dropdown-menu-dark">
-                                <li><a class="dropdown-item" href="#">Fiction</a></li>
-                                <li><a class="dropdown-item" href="#">Non-Fiction</a></li>
-                                <li><a class="dropdown-item" href="#">Mystery</a></li>
-                                <li><a class="dropdown-item" href="#">Science</a></li>
+                                <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <a href="#" class="text-decoration-none">Fiction</a>
+                                    </span>
+                                    <span>
+                                        <a href="#" class="text-decoration-none me-2"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="#" class="text-decoration-none"><i class="fa-solid fa-trash"></i></a>
+                                    </span>
+                                </li>
+                                <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <a href="#" class="text-decoration-none">Non-Fiction</a>
+                                    </span>
+                                    <span>
+                                        <a href="#" class="text-decoration-none me-2"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="#" class="text-decoration-none"><i class="fa-solid fa-trash"></i></a>
+                                    </span>
+                                </li>
+                                <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <a href="#" class="text-decoration-none">Mystery</a>
+                                    </span>
+                                    <span>
+                                        <a href="#" class="text-decoration-none me-2"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="#" class="text-decoration-none"><i class="fa-solid fa-trash"></i></a>
+                                    </span>
+                                </li>
+                                <li class="dropdown-item d-flex justify-content-between align-items-center">
+                                    <span>
+                                        <a href="#" class="text-decoration-none">Science</a>
+                                    </span>
+                                    <span>
+                                        <a href="#" class="text-decoration-none me-2"><i class="fa-solid fa-pen"></i></a>
+                                        <a href="#" class="text-decoration-none"><i class="fa-solid fa-trash"></i></a>
+                                    </span>
+                                </li>
+                                <li><a  href="#" class="dropdown-item">+ Add new category</a></li>
                             </ul>
+                        </li>
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="#"><i class="fa-solid fa-book-open"></i> Books</a>
+                        </li>
+                        <li class="nav-item me-2">
+                            <a class="nav-link" href="#"><i class="fa-solid fa-people-group"></i> Authors</a>
                         </li>
                     </ul>
 
@@ -85,7 +124,7 @@
             @RenderBody()
         </main>
     </div>
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer">
         <div class="container">
             &copy; 2025 - Bookstore - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>

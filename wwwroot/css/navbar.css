@@ -54,3 +54,33 @@
     .navbar .btn:hover {
         opacity: 0.8;
     }
+
+.footer {
+    
+    text-align: center;
+}
+    .footer a {
+        text-decoration: none;
+    }
+
+
+.dropdown-menu .dropdown-item a {
+    color: #ffffff;
+    text-decoration: none;
+}
+
+    .dropdown-menu .dropdown-item a:hover {
+        color: #ffffff;
+        text-decoration: none;
+    }
+
+
+.dropdown-menu .dropdown-item i {
+    color: #ffffff;
+    transition: color 0.2s;
+}
+
+
+.dropdown-menu .dropdown-item a:hover i {
+    color: #b3b3b3;
+}
