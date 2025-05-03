@@ -17,6 +17,7 @@
                     }
                 </div>
             } *@
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
             <form asp-action="Register" method="post">
                 <div class="form-group">
@@ -88,3 +89,6 @@
     }
 
  </script>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

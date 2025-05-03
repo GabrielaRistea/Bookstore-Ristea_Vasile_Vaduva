@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿@Html.AntiForgeryToken()
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -74,7 +75,7 @@
                         </li>
                     </ul>
 
-                    <form class="d-flex me-3" role="search">
+                    <form class="navbar-nav " role="search">
                         <input class="form-control me-2" type="search" placeholder="Search books..." aria-label="Search">
                         <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
                     </form>
@@ -86,16 +87,33 @@
                         <li class="nav-item me-2">
                             <a class="nav-link" href="#"><i class="fas fa-shopping-cart"></i> Cart</a>
                         </li>
-                        <li class="nav-item me-2">
-                            <a class="btn btn-outline-light" asp-controller="Account" asp-action="LogIn">
-                                <i class="fas fa-sign-in-alt"></i> Log In
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="btn btn-light text-dark" asp-controller="Account" asp-action="Register">
-                                <i class="fas fa-user-plus"></i> Register
-                            </a>
-                        </li>
+                        @if (User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item me-2">
+                                <a class="nav-link text-light">Hello, @User.Identity.Name</a>
+                            </li>
+                            <li class="nav-item me-2">
+                                <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="btn btn-outline-light nav-link border-0 bg-transparent">
+                                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                                    </button>
+                                </form>
+                            </li>
+
+                        }
+                        else
+                        {
+                            <li class="nav-item me-2">
+                                <a class="btn btn-outline-light" asp-controller="Account" asp-action="LogIn">
+                                    <i class="fas fa-sign-in-alt"></i> Log In
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="btn btn-light text-dark" asp-controller="Account" asp-action="Register">
+                                    <i class="fas fa-user-plus"></i> Register
+                                </a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>

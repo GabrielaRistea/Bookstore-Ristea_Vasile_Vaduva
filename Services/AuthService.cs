@@ -18,14 +18,33 @@ namespace Bookstore.Services
             _authRepository = authRepository;
             _mapper = mapper;
         }
-        public async Task<LogInDto> LoginAsync(LogInDto loginRequest)
+        //public async Task<LogInDto> LoginAsync(LogInDto loginRequest)
+        //{
+        //    var user = await _authRepository.GetByEmailAsync(loginRequest.Email);
+        //    if (user == null || !VerifyPasswordHash(loginRequest.Password, user.PasswordHash))
+        //        return null;
+        //    await _authRepository.SaveChangesAsync();
+        //    var userLogIn = _mapper.Map<LogInDto>(user);
+        //    return userLogIn;
+        //}
+        public async Task<AuthResultDto> LoginAsync(LogInDto loginRequest)
         {
             var user = await _authRepository.GetByEmailAsync(loginRequest.Email);
             if (user == null || !VerifyPasswordHash(loginRequest.Password, user.PasswordHash))
-                return null;
-            await _authRepository.SaveChangesAsync();
-            var userLogIn = _mapper.Map<LogInDto>(user);
-            return userLogIn;
+            {
+                return new AuthResultDto
+                {
+                    Success = false,
+                    ErrorMessage = "Invalid email or password."
+                };
+            }
+
+            return new AuthResultDto
+            {
+                Success = true,
+                UserId = user.Id.ToString(), // sau direct user.Id dacă e string
+                UserName = $"{user.FirstName} {user.LastName}" // sau Email
+            };
         }
         public async Task<AuthResultDto> RegisterAsync(RegisterDto registerRequest)
         {
