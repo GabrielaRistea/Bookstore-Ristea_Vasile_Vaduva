@@ -6,6 +6,7 @@ using Bookstore.Repositories;
 using Bookstore.Repositories.Interfaces;
 using Bookstore.Services;
 using Bookstore.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,14 @@ builder.Services.AddDbContext<BookstoreContext>(
     optionsBuilder =>
         optionsBuilder.UseNpgsql(builder.Configuration.GetConnectionString("BookstoreDb"))
         );
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Account/Login";
+        options.LogoutPath = "/Account/Logout";
+    });
+
 //builder.Services.AddScoped<IMapper, ServiceMapper>();
 builder.Services.AddScoped<IAuthRepository, AuthRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
