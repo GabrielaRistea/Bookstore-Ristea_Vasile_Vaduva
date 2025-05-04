@@ -1,0 +1,130 @@
+﻿@model IEnumerable<Bookstore.Models.Author>
+@{
+    ViewData["Title"] = "Authors";
+}
+
+<style>
+    .authors-title {
+        color: white;
+        font-size: 40px;
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .add-button-container {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .add-button {
+        background-color: #6a0dad; /* mov intens */
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        font-size: 16px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+
+        .add-button:hover {
+            background-color: #581b98;
+        }
+
+    .authors-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 30px;
+        justify-content: center;
+        padding: 0 40px 40px;
+    }
+
+    .authors-card {
+        background-color: #1e1e2f; /* negru cu ton mov închis */
+        border-radius: 20px;
+        padding: 20px;
+        text-align: center;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.6);
+        transition: transform 0.2s ease;
+    }
+
+        .authors-card:hover {
+            transform: scale(1.03);
+        }
+
+        .authors-card img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid white;
+            margin-bottom: 15px;
+        }
+
+    .author-name {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        color: #d1c4e9; /* mov pal */
+    }
+
+    .author-actions {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+
+        .author-actions a {
+            font-size: 13px;
+            padding: 6px 10px;
+            border-radius: 6px;
+            text-decoration: none;
+            color: white;
+            transition: background-color 0.3s ease;
+        }
+
+        .author-actions .edit {
+            background-color: #3b82f6;
+        }
+
+        .author-actions .details {
+            background-color: #6366f1;
+        }
+
+        .author-actions .delete {
+            background-color: #ef4444;
+        }
+
+        .author-actions a:hover {
+            opacity: 0.85;
+        }
+</style>
+
+<div class="authors-title">Authors</div>
+
+<div class="add-button-container">
+    <a asp-action="Create" class="add-button">+ Add New Author</a>
+</div>
+
+<div class="authors-grid">
+    @foreach (var author in Model)
+    {
+        <div class="authors-card">
+            <a asp-area="" asp-controller="Authors" asp-action="AllAuthorDetails" asp-route-authorId="@author.Id"> 
+                <img src="@(author.AuthorImage != null
+                    ? $"data:image/jpeg;base64,{Convert.ToBase64String(author.AuthorImage)}"
+                    : Url.Content("~/images/default.jpg"))"
+                     alt="@author.Name" />
+            </a> 
+
+            <div class="author-name">@author.Name</div>
+
+            <div class="author-actions">
+                <a asp-action="Edit" asp-route-id="@author.Id" class="edit">Edit</a>
+                <a asp-action="Details" asp-route-id="@author.Id" class="details">Details</a>
+                <a asp-action="Delete" asp-route-id="@author.Id" class="delete">Delete</a>
+            </div>
+        </div>
+    }
+</div>

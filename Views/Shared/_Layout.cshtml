@@ -34,8 +34,13 @@
                         <li class="nav-item me-2">
                             <a class="nav-link" href="#"><i class="fa-solid fa-book-open"></i> Books</a>
                         </li>
+                        @* <li class="nav-item me-2"> *@
+                        @*     <a class="nav-link" href="#"><i class="fa-solid fa-people-group"></i> Authors</a> *@
+                        @* </li> *@
                         <li class="nav-item me-2">
-                            <a class="nav-link" href="#"><i class="fa-solid fa-people-group"></i> Authors</a>
+                            <a class="nav-link" asp-controller="Authors" asp-action="Index">
+                                <i class="fa-solid fa-people-group"></i> Authors
+                            </a>
                         </li>
                     </ul>
 

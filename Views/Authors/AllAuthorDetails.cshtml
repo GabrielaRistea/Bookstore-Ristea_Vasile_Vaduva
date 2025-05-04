@@ -1,0 +1,169 @@
+﻿@using Bookstore.DTOs
+@model AuthorDto
+
+@{
+    ViewData["Title"] = "AllAuthorDetails";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@Model.Name</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .title-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 90%;
+            max-width: 1000px;
+            margin: 20px auto;
+        }
+
+        .title {
+            font-size: 40px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .add-author-button {
+            padding: 8px 12px;
+            background-color: #6a0dad;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+            .add-author-button:hover {
+                background-color: #581b98;
+            }
+
+        .author-details {
+            background: #1e1e2f;
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+            align-self: center;
+        }
+
+
+        .author-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+            .author-header img {
+                width: 250px;
+                height: 250px;
+                border-radius: 50%;
+                object-fit: cover;
+                border: 3px solid white;
+                transition: transform 0.3s ease-in-out;
+            }
+
+                .author-header img:hover {
+                    transform: scale(1.1);
+                }
+
+        .author-bio {
+            font-size: 16px;
+            margin-top: 10px;
+            padding: 0 20px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            line-height: 1.6;
+            text-align: justify;
+        }
+
+        table {
+            width: 90%;
+            /* max-width: 900px; */
+            margin: 0 auto 40px;
+            border-collapse: collapse;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            background-color: #1e1e1e;
+            margin-top: 20px;
+            margin-left: 0px;
+            align-self: center;
+            padding: 25px;
+        }
+
+        thead {
+            background-color: #2a2a2a;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+        }
+
+        th {
+            color: #6a0dad;
+            font-size: 16px;
+            border-bottom: 2px solid #6a0dad;
+        }
+
+        td {
+            font-size: 14px;
+            border-bottom: 1px solid #333;
+        }
+
+        tr:hover {
+            background-color: #2e2e2e;
+        }
+
+        img {
+            width: 60px;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .action-links a {
+            margin: 0 5px;
+            text-decoration: none;
+            padding: 6px 10px;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            transition: background-color 0.2s;
+        }
+
+            .action-links a:hover {
+                background-color: #555;
+            }
+    </style>
+</head>
+
+<div class="title-container">
+    <h1 class="title">@Model.Name</h1>
+</div>
+
+<div class="author-details">
+    <div class="author-header">
+        <img src="@(Model.AuthorImage != null
+                ? $"data:image/jpeg;base64,{Convert.ToBase64String(Model.AuthorImage)}"
+                : Url.Content("~/images/default.jpg"))"
+             alt="@Model.Name" />
+    </div>
+    <div class="author-header">
+        <h1>@Model.Name</h1>
+    </div>
+    <div class="author-bio">
+        <p>@Model.Description</p>
+    </div>
+</div>
+
+
+

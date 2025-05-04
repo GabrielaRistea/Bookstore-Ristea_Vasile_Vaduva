@@ -14,7 +14,7 @@ namespace Bookstore.Models
         [DataType(DataType.Upload)]
         [DisplayName("Imagine")]
         [NotMapped]
-        public IFormFile ImageFile { get; set; }
+        public IFormFile? ImageFile { get; set; }
         public ICollection<AuthorBook> AuthorBooks { get; set; }
     }
 }
