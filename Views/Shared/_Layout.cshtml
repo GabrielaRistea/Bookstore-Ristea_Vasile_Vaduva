@@ -32,7 +32,9 @@
                             </ul>
                         </li>
                         <li class="nav-item me-2">
-                            <a class="nav-link" href="#"><i class="fa-solid fa-book-open"></i> Books</a>
+                            <a class="nav-link" asp-controller="Books" asp-action="Index" >
+                                <i class="fa-solid fa-book-open"></i> Books
+                            </a>
                         </li>
                         @* <li class="nav-item me-2"> *@
                         @*     <a class="nav-link" href="#"><i class="fa-solid fa-people-group"></i> Authors</a> *@
@@ -44,8 +46,8 @@
                         </li>
                     </ul>
 
-                    <form class="navbar-nav " role="search">
-                        <input class="form-control me-2" type="search" placeholder="Search books..." aria-label="Search">
+                    <form class="navbar-nav" asp-controller="Books" asp-action="Index" method="get" role="search">
+                        <input class="form-control me-2" type="search" id="book-search" name="searchBook" value="@Context.Request.Query["searchBook"]" placeholder="Search books..." aria-label="Search">
                         <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i></button>
                     </form>
 

@@ -111,7 +111,7 @@
     @foreach (var author in Model)
     {
         <div class="authors-card">
-            <a asp-area="" asp-controller="Authors" asp-action="AllAuthorDetails" asp-route-authorId="@author.Id"> 
+            <a asp-area="" asp-controller="Authors" asp-action="AllAuthorDetails" asp-route-authorId="@author.Id">
                 <img src="@(author.AuthorImage != null
                     ? $"data:image/jpeg;base64,{Convert.ToBase64String(author.AuthorImage)}"
                     : Url.Content("~/images/default.jpg"))"

@@ -12,7 +12,7 @@ namespace Bookstore.Models
         public string ISBN { get; set; }
         public string Description { get; set; }
         public float Price { get; set; }
-        public DateTime? PublishingDate { get; set; }
+        public DateTime PublishingDate { get; set; }
         public string PublishingHouse { get; set; }
         public byte[]? BookImage { get; set; }
         [DataType(DataType.Upload)]
