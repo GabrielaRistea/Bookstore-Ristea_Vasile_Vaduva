@@ -16,5 +16,6 @@ namespace Bookstore.Services.Interfaces
         List<WishlistBook> GetAllWishlistBooks();
         List<Review> GetAllReviews();
         bool BookExists(int id);
+        GroupGenreDto GetBooksByGenre(int genreId);
     }
 }

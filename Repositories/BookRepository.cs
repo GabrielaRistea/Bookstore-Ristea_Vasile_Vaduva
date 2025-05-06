@@ -1,4 +1,5 @@
 ﻿using Bookstore.Context;
+using Bookstore.DTOs;
 using Bookstore.Models;
 using Bookstore.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
@@ -77,7 +78,14 @@ namespace Bookstore.Repositories
         {
             _context.Books.Update(book);
         }
-        
+        public Genre GetBookByGenre(int genreId)
+        {
+            return _context.Genres
+                .Include(a => a.GenreBooks)
+                    .ThenInclude(ab => ab.Book)
+                .FirstOrDefault(a => a.Id == genreId);
+        }
+
     }
 }
 

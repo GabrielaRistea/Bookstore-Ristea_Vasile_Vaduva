@@ -1,6 +1,8 @@
 ﻿using Bookstore.Services.Interfaces;
 using Bookstore.Repositories.Interfaces;
 using Bookstore.Models;
+using Bookstore.DTOs;
+using Bookstore.Repositories;
 
 namespace Bookstore.Services
 {
@@ -78,6 +80,28 @@ namespace Bookstore.Services
         public List<WishlistBook> GetAllWishlistBooks()
         {
             return _bookRepository.GetAllWishlistBooks().ToList();
+        }
+        public GroupGenreDto GetBooksByGenre(int genreId)
+        {
+            var genre = _bookRepository.GetBookByGenre(genreId);
+            if (genre == null) return null;
+            var books = genre.GenreBooks?
+            .Where(ab => ab.Book != null)
+            .Select(ab => new GroupBookDto
+            {
+                Id = ab.Book.Id,
+                Title = ab.Book.Title,
+                Price = ab.Book.Price,
+                BookImage = ab.Book.BookImage
+            }).ToList() ?? new List<GroupBookDto>();
+            return new GroupGenreDto
+            {
+                Id = genre.Id,
+                GenreType = genre.Type,
+                Books = books,
+                BookTitle = books.Select(b => b.Title).ToList()
+            };
+        
         }
     }
 }

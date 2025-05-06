@@ -46,5 +46,12 @@ namespace Bookstore.Repositories
         {
             return _context.AuthorBooks.ToList();
         }
+        public Author GetAuthorWithBooks(int authorId)
+        {
+            return _context.Authors
+                .Include(a => a.AuthorBooks)
+                    .ThenInclude(ab => ab.Book)
+                .FirstOrDefault(a => a.Id == authorId);
+        }
     }
 }

@@ -131,13 +131,22 @@ namespace Bookstore.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+        //[HttpGet]
+        //public IActionResult AllAuthorDetails(int authorId)
+        //{
+        //    var author = _authorService.GetAllAuthorDetails(authorId);
+
+
+        //    return View(author);
+        //}
         [HttpGet]
-        public IActionResult AllAuthorDetails(int authorId)
+        public IActionResult AuthorDetailsWithBooks(int authorId)
         {
-            var author = _authorService.GetAllAuthorDetails(authorId);
+            var authorDto = _authorService.GetAuthorWithBooks(authorId);
+            if (authorDto == null)
+                return NotFound();
 
-
-            return View(author);
+            return View(authorDto);
         }
     }
 }
