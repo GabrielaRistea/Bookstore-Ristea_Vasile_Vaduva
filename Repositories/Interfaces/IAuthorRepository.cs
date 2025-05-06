@@ -12,5 +12,6 @@ namespace Bookstore.Repositories.Interfaces
         void Save();
         Author GetById(int id);
         List<AuthorBook> GetAllAuthorBooks();
+        Author GetAuthorWithBooks(int authorId);
     }
 }

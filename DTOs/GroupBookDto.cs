@@ -4,21 +4,18 @@ using System.ComponentModel;
 
 namespace Bookstore.DTOs
 {
-    public class AuthorDto
+    public class GroupBookDto
     {
         public int Id { get; set; }
         [Required]
-        public string Name { get; set; }
-        
-        public byte[]? AuthorImage { get; set; }
+        public string Title { get; set; }
         [Required]
-        public string Description { get; set; }
+        public float Price { get; set; }
+        public byte[] BookImage { get; set; }
         [DataType(DataType.Upload)]
         [DisplayName("Image")]
         [NotMapped]
-        [Required]
+        [Required(ErrorMessage = "An image is required.")]
         public IFormFile ImageFile { get; set; }
-        public ICollection<GroupBookDto> Books { get; set; }
-        public ICollection<string> BookTitle { get; set; }
     }
 }

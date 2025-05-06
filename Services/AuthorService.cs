@@ -10,9 +10,11 @@ namespace Bookstore.Services
     public class AuthorService : IAuthorService
     {
         private IAuthorRepository _authorRepository;
-        public AuthorService(IAuthorRepository authorRepository)
+        private readonly IBookRepository _bookRepository;
+        public AuthorService(IAuthorRepository authorRepository, IBookRepository bookRepository)
         {
             _authorRepository = authorRepository;
+            _bookRepository = bookRepository;
         }
         public List<Author> GetAllAuthors()
         {
@@ -76,5 +78,31 @@ namespace Bookstore.Services
             };
             return result;
         }
+        public AuthorDto GetAuthorWithBooks(int authorId)
+        {
+            var author = _authorRepository.GetAuthorWithBooks(authorId);
+            if (author == null) return null;
+
+            var books = author.AuthorBooks?
+        .Where(ab => ab.Book != null)
+        .Select(ab => new GroupBookDto
+        {
+            Id = ab.Book.Id,
+            Title = ab.Book.Title,
+            Price = ab.Book.Price,
+            BookImage = ab.Book.BookImage
+        }).ToList() ?? new List<GroupBookDto>();
+
+            return new AuthorDto
+            {
+                Id = author.Id,
+                Name = author.Name,
+                Description = author.Description,
+                AuthorImage = author.AuthorImage,
+                Books = books,
+                BookTitle = books.Select(b => b.Title).ToList()
+            };
+        }
+
     }
 }

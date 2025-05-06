@@ -19,5 +19,7 @@ namespace Bookstore.Repositories.Interfaces
         List<Review> GetAllReviews();
         //List<Book> GetBookByAuthor(int authorId);
         //List<Book> GetBookByGenre(int genreId);
+        Genre GetBookByGenre(int genreId);
+
     }
 }
