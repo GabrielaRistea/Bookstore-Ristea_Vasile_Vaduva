@@ -4,6 +4,24 @@
     ViewData["Title"] = "Books";
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successMessage" class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"] <i class="fa-solid fa-check"></i>
+    </div>
+
+    <script>
+        // După 5 secunde (5000 ms), ascunde mesajul
+        setTimeout(function() {
+            var successMessage = document.getElementById('successMessage');
+            if (successMessage) {
+                successMessage.style.display = 'none';
+            }
+        }, 5000); // 5000ms = 5 secunde
+    </script>
+}
+
+
 <h2>Books</h2>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -96,9 +114,14 @@
                         <a asp-action="Edit" asp-route-id="@book.Id" class="edit">Edit</a>
                         <a asp-action="Delete" asp-route-id="@book.Id" class="delete">Delete</a>
                     }
-                    <a href="#" class="btn btn-outline-primary mt-auto">
-                        <i class="fas fa-shopping-cart"></i> Add to cart
-                    </a>
+                    <form asp-controller="Orders" asp-action="AddToCart" method="post" class="mt-auto">
+                        <input type="hidden" name="bookId" value="@book.Id" />
+                        <input type="hidden" name="quantity" value="1" />
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-shopping-cart"></i> Add to cart
+                        </button>
+                    </form>
+
                 </div>
             </div>
         </div>

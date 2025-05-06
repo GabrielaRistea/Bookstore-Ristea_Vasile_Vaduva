@@ -3,6 +3,7 @@ using System;
 using Bookstore.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Bookstore.Migrations
 {
     [DbContext(typeof(BookstoreContext))]
-    partial class BookstoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250506165349_addNullColOrder")]
+    partial class addNullColOrder
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -312,12 +315,7 @@ namespace Bookstore.Migrations
                     b.Property<DateTime?>("TimeCodeExpires")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserRoleId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("UserRoleId");
 
                     b.ToTable("Users");
                 });
@@ -334,7 +332,12 @@ namespace Bookstore.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("UserRoles");
                 });
@@ -486,15 +489,11 @@ namespace Bookstore.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("Bookstore.Models.User", b =>
+            modelBuilder.Entity("Bookstore.Models.UserRole", b =>
                 {
-                    b.HasOne("Bookstore.Models.UserRole", "UserRole")
-                        .WithMany("Users")
-                        .HasForeignKey("UserRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserRole");
+                    b.HasOne("Bookstore.Models.User", null)
+                        .WithMany("UserRoles")
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("Bookstore.Models.Wishlist", b =>
@@ -568,13 +567,10 @@ namespace Bookstore.Migrations
 
                     b.Navigation("Reviews");
 
+                    b.Navigation("UserRoles");
+
                     b.Navigation("Wishlist")
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("Bookstore.Models.UserRole", b =>
-                {
-                    b.Navigation("Users");
                 });
 
             modelBuilder.Entity("Bookstore.Models.Wishlist", b =>

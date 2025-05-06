@@ -15,8 +15,8 @@ namespace Bookstore.Models
         public User User { get; set; }
 
         [ForeignKey(nameof(HistoryOrder))]
-        public int IdHistoryOrders { get; set; }
-        public HistoryOrders HistoryOrder { get; set; }
+        public int? IdHistoryOrders { get; set; }
+        public HistoryOrders? HistoryOrder { get; set; }
 
     }
 }
