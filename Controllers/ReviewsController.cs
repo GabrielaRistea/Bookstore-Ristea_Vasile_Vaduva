@@ -10,6 +10,7 @@ using Bookstore.Models;
 using Bookstore.Services.Interfaces;
 using Bookstore.DTOs;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookstore.Controllers
 {
@@ -23,6 +24,7 @@ namespace Bookstore.Controllers
         }
 
         //GET: Reviews
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var reviews = _reviewService.GetAllReviews();
@@ -30,6 +32,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Reviews/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,6 +51,7 @@ namespace Bookstore.Controllers
 
         // GET: Reviews/Create?idBook=5
         [HttpGet]
+        [Authorize(Roles = "user")]
         public IActionResult Create(int bookId)
         {
             var dto = new ReviewDto
@@ -59,6 +63,7 @@ namespace Bookstore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
         public IActionResult Create(ReviewDto dto)
         {
             if (!ModelState.IsValid)
@@ -83,6 +88,7 @@ namespace Bookstore.Controllers
 
 
         // GET: Reviews/Edit/5
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -103,6 +109,7 @@ namespace Bookstore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Comm,Rating,IdUser,IdBook")] Review review)
         {
             if (id != review.Id)
@@ -136,6 +143,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Reviews/Delete/5
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -155,6 +163,7 @@ namespace Bookstore.Controllers
         // POST: Reviews/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             _reviewService.DeleteReview(id);

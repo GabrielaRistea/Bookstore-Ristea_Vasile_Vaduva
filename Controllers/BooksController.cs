@@ -9,6 +9,7 @@ using Bookstore.Context;
 using Bookstore.Models;
 using Bookstore.Services.Interfaces;
 using Bookstore.DTOs;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookstore.Controllers
 {
@@ -23,6 +24,7 @@ namespace Bookstore.Controllers
             _authorService = authorService;
             _genreService = genreService;
         }
+        [AllowAnonymous]
         public IActionResult Index(string searchBook, string sortOrder)
         {
             var books = _bookService.GetAllBooks().Select(b => mapBook(b)).ToList();
@@ -49,7 +51,7 @@ namespace Bookstore.Controllers
             }
             return View(books);
         }
-
+        [AllowAnonymous]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -66,7 +68,7 @@ namespace Bookstore.Controllers
 
             return View(mapBook(book));
         }
-
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             var authors = _authorService.GetAllAuthors();
@@ -78,6 +80,7 @@ namespace Bookstore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("Id,Title,Price,ISBN,Description,PublishingDate,PublishingHouse, Authors, Genres, ImageFile")] BookDto bookDto)
         {
             var book = mapBook(bookDto);
@@ -85,7 +88,7 @@ namespace Bookstore.Controllers
             await _bookService.AddBookAsync(book);
             return RedirectToAction(nameof(Index));
         }
-
+        [Authorize(Roles = "admin")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -108,6 +111,7 @@ namespace Bookstore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Price,ISBN,Description,PublishingDate,PublishingHouse, Authors, Genres, ImageFile")] BookDto bookDto)
         {
             if (id != bookDto.Id)
@@ -138,6 +142,7 @@ namespace Bookstore.Controllers
 
         }
 
+        [Authorize(Roles = "admin")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -156,6 +161,7 @@ namespace Bookstore.Controllers
         }
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             var book = _bookService.GetBookById(id);
@@ -165,7 +171,7 @@ namespace Bookstore.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
-
+        [AllowAnonymous]
         public IActionResult BooksByGenre(int genreId)
         {
             var genreDto = _bookService.GetBooksByGenre(genreId);
