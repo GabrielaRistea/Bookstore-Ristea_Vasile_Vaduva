@@ -12,7 +12,9 @@ namespace Bookstore.Models
         public string LastName { get; set; }
         public string Email { get; set; }
         public string PasswordHash { get; set; }
-        public ICollection<UserRole> UserRoles { get; set; }
+        [ForeignKey(nameof(UserRole))]
+        public int UserRoleId { get; set; }
+        public UserRole UserRole { get; set; }
         public Address? Address { get; set; }
         public ICollection<Review> Reviews { get; set; }
         public ICollection<Order> Orders { get; set; }

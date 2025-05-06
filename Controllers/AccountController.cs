@@ -124,7 +124,8 @@ namespace Bookstore.Controllers
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, authResult.UserId),
-                new Claim(ClaimTypes.Name, authResult.UserName)
+                new Claim(ClaimTypes.Name, authResult.UserName),
+                new Claim(ClaimTypes.Role, authResult.UserRole)
             };
 
             var identity = new ClaimsIdentity(claims, "Cookies");

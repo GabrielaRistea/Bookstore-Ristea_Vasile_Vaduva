@@ -3,6 +3,7 @@ using System;
 using Bookstore.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Bookstore.Migrations
 {
     [DbContext(typeof(BookstoreContext))]
-    partial class BookstoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250506123240_removeuserrolecollect")]
+    partial class removeuserrolecollect
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -312,7 +315,7 @@ namespace Bookstore.Migrations
                     b.Property<DateTime?>("TimeCodeExpires")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserRoleId")
+                    b.Property<int?>("UserRoleId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -490,13 +493,9 @@ namespace Bookstore.Migrations
 
             modelBuilder.Entity("Bookstore.Models.User", b =>
                 {
-                    b.HasOne("Bookstore.Models.UserRole", "UserRole")
+                    b.HasOne("Bookstore.Models.UserRole", null)
                         .WithMany("Users")
-                        .HasForeignKey("UserRoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("UserRole");
+                        .HasForeignKey("UserRoleId");
                 });
 
             modelBuilder.Entity("Bookstore.Models.Wishlist", b =>

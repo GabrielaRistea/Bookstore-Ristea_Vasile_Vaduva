@@ -1,4 +1,6 @@
-﻿namespace Bookstore.Utils
+﻿using Microsoft.CodeAnalysis.Elfie.Serialization;
+
+namespace Bookstore.Utils
 {
     public class MailSettings
     {
