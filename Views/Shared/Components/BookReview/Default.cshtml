@@ -1,0 +1,49 @@
+﻿@model Bookstore.ViewModels.BookReviewViewModel
+
+<h4>Reviews</h4>
+
+@if (Model.Reviews.Any())
+{
+    <p><strong>Average Rating:</strong> @Model.AverageRating.ToString("0.0")/5</p>
+
+    <ul>
+        @foreach (var review in Model.Reviews)
+        {
+            <li>
+                <strong>@review.User?.FirstName @review.User?.LastName</strong> <br />
+                <div class="star-rating">
+                    @for (double i = 1; i <= 5; i++)
+                    {
+                        <span class="star @(i <= review.Rating ? "full" : "empty")">★</span>
+                    }
+                </div>
+                
+            </li>
+            @review.Comm
+        }
+    </ul>
+}
+else
+{
+    <p>No reviews yet.</p>
+}
+
+<style>
+    .star-rating {
+        display: inline-block;
+    }
+
+    .star {
+        font-size: 20px;
+        color: #ddd;
+        padding: 0 2px;
+    }
+
+        .star.full {
+            color: gold;
+        }
+
+        .star.empty {
+            color: #ddd;
+        }
+</style>

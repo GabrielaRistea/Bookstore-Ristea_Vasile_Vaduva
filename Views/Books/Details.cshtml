@@ -64,12 +64,21 @@
             @Html.DisplayNameFor(model => model.BookImage)
                 <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.BookImage)" alt="@Model.Title" style=" height: 200 px; width: 200px" />
             
-         </dt>
+        </dt>
+
         
-         
-         
+
     </dl>
 </div>
+
+<!-- Display reviews using ViewComponent -->
+@await Component.InvokeAsync("BookReview", new { bookId = Model.Id })
+
+<div>
+    <a asp-controller="Reviews" asp-action="Create" asp-route-bookId="@Model.Id" class="btn btn-primary">Add Review</a>
+</div>
+
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>
