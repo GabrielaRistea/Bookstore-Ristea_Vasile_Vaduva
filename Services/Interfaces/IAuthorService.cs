@@ -13,5 +13,6 @@ namespace Bookstore.Services.Interfaces
         Author GetAuthorById(int id);
         List<AuthorBook> GetAllAuthorBooks();
         AuthorDto GetAllAuthorDetails(int authorId);
+        AuthorDto GetAuthorWithBooks(int authorId);
     }
 }

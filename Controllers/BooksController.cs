@@ -23,7 +23,7 @@ namespace Bookstore.Controllers
             _authorService = authorService;
             _genreService = genreService;
         }
-        public IActionResult Index(string searchBook)
+        public IActionResult Index(string searchBook, string sortOrder)
         {
             var books = _bookService.GetAllBooks().Select(b => mapBook(b)).ToList();
             var authorbooks = _bookService.GetAllAuthorBooks();
@@ -35,7 +35,18 @@ namespace Bookstore.Controllers
             {
                 books = books.Where(s => s.Title != null ? s.Title.Contains(searchBook) : true).ToList();
             }
-
+            switch (sortOrder)
+            {
+                case "price_asc":
+                    books = books.OrderBy(b => b.Price).ToList(); 
+                    break;
+                case "price_desc":
+                    books = books.OrderByDescending(b => b.Price).ToList(); 
+                    break;
+                default:
+                    books = books.OrderBy(b => b.Title).ToList(); 
+                    break;
+            }
             return View(books);
         }
 
@@ -154,6 +165,16 @@ namespace Bookstore.Controllers
             }
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult BooksByGenre(int genreId)
+        {
+            var genreDto = _bookService.GetBooksByGenre(genreId);
+            if (genreDto == null)
+                return NotFound();
+
+            return View(genreDto);
+        }
+
 
         private BookDto mapBook(Book b)
         {

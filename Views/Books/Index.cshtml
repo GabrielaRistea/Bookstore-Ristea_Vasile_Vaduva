@@ -53,6 +53,22 @@
     <a asp-action="Create" class="add-button">+ Add New Book</a>
 </div>
 
+<form method="get" asp-controller="Books" asp-action="Index" class="mb-4 d-flex align-items-center gap-2"> 
+    @* <label for="sortOrder" class="mb-0 me-2">Sortare după preț:</label>  *@
+
+    <select name="sortOrder" id="sortOrder" class="form-control form-select w-auto" style="min-width: 180px;"> 
+         <option value="">Select</option>
+        <option value="price_asc">Ascending price</option>
+        <option value="price_desc">Descending price</option>
+    </select> 
+
+     <button type="submit" class="btn btn-success p-2" title="Aplică sortarea"> 
+         <i class="fas fa-check"></i> 
+     </button>
+ </form>
+
+
+
 <div class="row">
     @foreach (var book in Model)
     {

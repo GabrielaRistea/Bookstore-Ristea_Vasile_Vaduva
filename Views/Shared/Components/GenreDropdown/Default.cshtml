@@ -4,7 +4,7 @@
 {
     <li class="dropdown-item d-flex justify-content-between align-items-center">
         <span>
-            <a asp-controller="Genres" asp-action="Details" asp-route-id="@genre.Id" class="text-decoration-none">
+            <a asp-controller="Books" asp-action="BooksByGenre" asp-route-genreId="@genre.Id" class="text-decoration-none">
                 @genre.Type
             </a>
         </span>
