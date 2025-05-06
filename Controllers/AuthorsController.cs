@@ -9,6 +9,7 @@ using Bookstore.Context;
 using Bookstore.Models;
 using Bookstore.Services.Interfaces;
 using Bookstore.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookstore.Controllers
 {
@@ -19,12 +20,13 @@ namespace Bookstore.Controllers
         {
             _authorService = authorService;
         }
-
+        [AllowAnonymous]
         public IActionResult Index()
         {
             var author = _authorService.GetAllAuthors();
             return View(author);
         }
+        [AllowAnonymous]
         public IActionResult Details(int? id)
         {
             if (id == null)
@@ -43,6 +45,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Authors/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             var author = _authorService.GetAllAuthors();
@@ -50,6 +53,7 @@ namespace Bookstore.Controllers
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("Id,Name,Description,ImageFile")] Author author)
         {
             var authors = _authorService.GetAllAuthors();
@@ -59,6 +63,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Authors/Edit/5
+        [Authorize(Roles = "admin")]
         public IActionResult Edit(int? id)
         {
             if (id == null)
@@ -77,6 +82,7 @@ namespace Bookstore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> EditAsync(int id, [Bind("Id,Name,Description,ImageFile")] Author author)
         {
             if (id != author.Id)
@@ -104,6 +110,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Authors/Delete/5
+        [Authorize(Roles = "admin")]
         public IActionResult Delete(int? id)
         {
             if (id == null)
@@ -122,6 +129,7 @@ namespace Bookstore.Controllers
         }
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public IActionResult DeleteConfirmed(int id)
         {
             var author = _authorService.GetAuthorById(id);
@@ -140,6 +148,7 @@ namespace Bookstore.Controllers
         //    return View(author);
         //}
         [HttpGet]
+        [AllowAnonymous]
         public IActionResult AuthorDetailsWithBooks(int authorId)
         {
             var authorDto = _authorService.GetAuthorWithBooks(authorId);

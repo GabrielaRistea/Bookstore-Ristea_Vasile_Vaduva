@@ -9,19 +9,24 @@
             </a>
         </span>
         <span>
-            <a asp-controller="Genres" asp-action="Edit" asp-route-id="@genre.Id" class="text-decoration-none me-2">
-                <i class="fa-solid fa-pen"></i>
-            </a>
-            <a asp-controller="Genres" asp-action="Delete" asp-route-id="@genre.Id" class="text-decoration-none">
-                <i class="fa-solid fa-trash"></i>
-            </a>
+            @if (User.IsInRole("admin"))
+            {
+                <a asp-controller="Genres" asp-action="Edit" asp-route-id="@genre.Id" class="text-decoration-none me-2">
+                    <i class="fa-solid fa-pen"></i>
+                </a>
+                <a asp-controller="Genres" asp-action="Delete" asp-route-id="@genre.Id" class="text-decoration-none">
+                    <i class="fa-solid fa-trash"></i>
+                </a>
+            }
         </span>
     </li>
 }
-
-<li><hr class="dropdown-divider"></li>
-<li class="dropdown-item text-center">
-    <a asp-controller="Genres" asp-action="Create" class="text-decoration-none">
-        <i class="fa-solid fa-plus"></i> Add new category
-    </a>
-</li>
+@if (User.IsInRole("admin"))
+{
+    <li><hr class="dropdown-divider"></li>
+    <li class="dropdown-item text-center">
+        <a asp-controller="Genres" asp-action="Create" class="text-decoration-none">
+            <i class="fa-solid fa-plus"></i> Add new category
+        </a>
+    </li>
+}

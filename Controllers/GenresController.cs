@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Bookstore.Context;
 using Bookstore.Models;
 using Bookstore.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookstore.Controllers
 {
@@ -21,6 +22,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Genres
+        [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
             var genres = _genreService.GetAllGenres();
@@ -28,6 +30,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Genres/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -45,6 +48,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Genres/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
@@ -55,6 +59,7 @@ namespace Bookstore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Create([Bind("Id,Type")] Genre genre)
         {
             //if (ModelState.IsValid)
@@ -70,6 +75,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Genres/Edit/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -90,6 +96,7 @@ namespace Bookstore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Type")] Genre genre)
         {
             if (id != genre.Id)
@@ -102,6 +109,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Genres/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -121,6 +129,7 @@ namespace Bookstore.Controllers
         // POST: Genres/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             _genreService.DeleteGenre(id);
