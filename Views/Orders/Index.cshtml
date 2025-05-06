@@ -1,0 +1,104 @@
+﻿@model Bookstore.Models.Order
+
+<h2>Your Cart</h2>
+
+@if (Model == null || Model.OrderItems == null || !Model.OrderItems.Any())
+{
+    <p>Your Cart is empty.</p>
+}
+else
+{
+    decimal total = 0;
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Title</th>
+                <th>Price</th>
+                <th>Quantity</th>
+                <th>Subtotal</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.OrderItems)
+            {
+                var subtotal = (decimal)item.Book.Price * item.Quantity;
+                total += subtotal;
+
+                <tr>
+                    <td>
+                        @if (item.Book.BookImage != null)
+                        {
+                            var base64 = Convert.ToBase64String(item.Book.BookImage);
+                            var imgSrc = $"data:image/png;base64,{base64}";
+                            <img src="@imgSrc" alt="Book cover" width="50" height="75" />
+                        }
+                    </td>
+                    <td>@item.Book?.Title</td>
+                    <td>@item.Book?.Price.ToString("0.00") lei</td>
+                    <td>
+                        <div class="input-group input-group-sm" style="max-width: 130px;">
+                            <form asp-action="DecreaseQuantity" method="post">
+                                <input type="hidden" name="bookId" value="@item.IdBook" />
+                                <button type="submit" class="btn btn-outline-secondary">
+                                    <i class="fa-solid fa-minus"></i>
+                                </button>
+                            </form>
+
+                            <span class="text-center" style="min-width: 30px; display: inline-block;">
+                                @item.Quantity
+                            </span>
+
+                            <form asp-action="IncreaseQuantity" method="post">
+                                <input type="hidden" name="bookId" value="@item.IdBook" />
+                                <button type="submit" class="btn btn-outline-secondary">
+                                    <i class="fa-solid fa-plus"></i>
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+
+
+                    <td>@subtotal.ToString("0.00") lei</td>
+                    <td>
+                        <form asp-action="RemoveFromCart" method="post">
+                            <input type="hidden" name="bookId" value="@item.IdBook" />
+                            <button type="submit" class="btn btn-sm btn-danger">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="4" class="text-end"><strong>Total:</strong></td>
+                <td colspan="2"><strong>@total.ToString("0.00") lei</strong></td>
+            </tr>
+        </tfoot>
+    </table>
+
+    <form asp-controller="Books" asp-action="Index" method="post" class="d-inline ml-2">
+        <button type="submit" class="btn btn-secondary">
+            <i class="fa-solid fa-arrow-left"></i> Continue shopping
+        </button>
+    </form>
+
+    <form asp-action="ClearCart" method="post" class="d-inline">
+        <button type="submit" class="btn btn-warning">
+            <i class="fa-solid fa-trash"></i> Empty Cart
+        </button>
+    </form>
+
+    <form asp-action="Checkout" method="post" class="d-inline">
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary">
+                Finalize Order 
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </form>
+}
