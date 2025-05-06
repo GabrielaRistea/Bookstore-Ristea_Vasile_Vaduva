@@ -10,5 +10,6 @@ namespace Bookstore.Repositories.Interfaces
         Task SaveChangesAsync();
         Task<User> AddAsync(User user);
         Task UpdateUserAsync(User user);
+        Task<UserRole> GetRoleByTypeAsync(string roleType);
     }
 }

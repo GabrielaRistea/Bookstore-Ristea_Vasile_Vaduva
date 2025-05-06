@@ -3,6 +3,7 @@ using System;
 using Bookstore.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Bookstore.Migrations
 {
     [DbContext(typeof(BookstoreContext))]
-    partial class BookstoreContextModelSnapshot : ModelSnapshot
+    [Migration("20250506122559_updateuserrole")]
+    partial class updateuserrole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -206,7 +209,7 @@ namespace Bookstore.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("IdHistoryOrders")
+                    b.Property<int>("IdHistoryOrders")
                         .HasColumnType("integer");
 
                     b.Property<int>("IdUser")
@@ -437,7 +440,9 @@ namespace Bookstore.Migrations
                 {
                     b.HasOne("Bookstore.Models.HistoryOrders", "HistoryOrder")
                         .WithMany("Orders")
-                        .HasForeignKey("IdHistoryOrders");
+                        .HasForeignKey("IdHistoryOrders")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Bookstore.Models.User", "User")
                         .WithMany("Orders")

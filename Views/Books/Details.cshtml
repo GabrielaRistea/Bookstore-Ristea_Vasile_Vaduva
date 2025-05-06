@@ -1,98 +1,142 @@
 ﻿@model Bookstore.DTOs.BookDto
-
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = "Book Details";
 }
 
-<h1>Details</h1>
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
-<div>
-    <h4>Book</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ISBN)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ISBN)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd class = "col-sm-10">
-            <div style=" word-wrap: break-word;">
-                @Html.DisplayFor(model => model.Description)
+<!-- Styling -->
+<style>
+    body {
+        font-size: 1.1rem;
+    }
+
+    h2, h4, h5 {
+        font-weight: 600;
+    }
+
+    p {
+        margin-bottom: 0.8rem;
+    }
+
+    .book-info i,
+    .useful-info i {
+        width: 22px;
+        display: inline-block;
+        color: #6c757d;
+    }
+
+    .useful-info span.text-muted {
+        font-size: 0.95rem;
+    }
+
+    .section-title {
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        border-bottom: 2px solid #ccc;
+        padding-bottom: 0.5rem;
+    }
+
+    .btn i {
+        margin-right: 6px;
+    }
+</style>
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Left side: Image + Actions + Description -->
+        <div class="col-md-4 text-center">
+            <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.BookImage)" alt="@Model.Title" class="img-fluid rounded shadow" style="max-height: 300px;" />
+
+            <div class="mt-4">
+                <button class="btn btn-success me-2">
+                    <i class="fas fa-cart-plus"></i>Add to Cart
+                </button>
+                <button class="btn btn-outline-danger">
+                    <i class="fas fa-heart"></i>Add to Favorites
+                </button>
             </div>
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PublishingDate)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PublishingDate)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PublishingHouse)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PublishingHouse)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.AuthorsNames)
-        </dt>
-        @* <a asp-controller="Authors" asp-action="AuthorDetailsWithBooks" asp-route-id="@Author.Id"> *@
-        @* <dd class="col-sm-10"> *@
-        @*     @Html.DisplayFor(model => model.AuthorsNames) *@
-        @* </dd> *@
-        <dd class="col-sm-10">
-            @for (int i = 0; i < Model.Authors.Count; i++)
-            {
-                <a asp-controller="Authors" asp-action="AuthorDetailsWithBooks" asp-route-authorid="@Model.Authors.ElementAt(i)">
-                    @Model.AuthorsNames.ElementAt(i)
-                </a>
-                @if (i < Model.Authors.Count - 1)
+
+            <!-- Separator line -->
+            <hr class="my-4" style="border-top: 2px solid #ccc;" />
+
+            <!-- Description -->
+            <div>
+                <h5><i class="fas fa-align-left"></i> Description:</h5>
+                <p style="white-space: pre-line;">@Model.Description</p>
+            </div>
+        </div>
+
+        <!-- Right side: Book Info -->
+        <div class="col-md-8 book-info">
+            <h2 class="mb-3">@Model.Title</h2>
+            <p><i class="fas fa-barcode"></i><strong>ISBN:</strong> @Model.ISBN</p>
+            <p><i class="fas fa-tag"></i><strong>Price:</strong> @Model.Price Lei</p>
+            <p><i class="fas fa-calendar-alt"></i><strong>Published on:</strong> @Model.PublishingDate.ToShortDateString()</p>
+            <p><i class="fas fa-building"></i><strong>Publisher:</strong> @Model.PublishingHouse</p>
+            <p>
+                <i class="fas fa-book"></i><strong>Genres:</strong>
+                @if (Model.GenreTypes != null && Model.GenreTypes.Any())
                 {
-                    <span>, </span>
+                    @string.Join(", ", Model.GenreTypes)
                 }
-            }
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.GenreTypes)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.GenreTypes)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.BookImage)
-                <img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.BookImage)" alt="@Model.Title" style=" height: 200 px; width: 200px" />
-            
-        </dt>
+                else
+                {
+                    <span>No genre available</span>
+                }
+            </p>
+            <p>
+                <i class="fas fa-user"></i><strong>Authors:</strong>
+                @for (int i = 0; i < Model.Authors.Count; i++)
+                {
+                    <a asp-controller="Authors" asp-action="AuthorDetailsWithBooks" asp-route-authorid="@Model.Authors.ElementAt(i)">
+                        @Model.AuthorsNames.ElementAt(i)
+                    </a>
+                    @if (i < Model.Authors.Count - 1)
+                    {
+                        <span>, </span>
+                    }
+                }
+            </p>
+        </div>
+    </div>
 
-        
+    <!-- Useful Info -->
+    <hr class="my-4" style="border-top: 1px solid #ccc;" />
+    <div class="mt-3 useful-info">
+        <h5 class="section-title"><i class="fas fa-info-circle text-primary"></i>Useful Info</h5>
 
-    </dl>
-</div>
+        <p>
+            <i class="fas fa-phone-alt"></i>
+            <strong>Order by phone:</strong> 031-433.50.68<br />
+            <span class="ms-4 text-muted">Mon–Fri 09:30 – 17:30</span>
+        </p>
 
-<!-- Display reviews using ViewComponent -->
-@await Component.InvokeAsync("BookReview", new { bookId = Model.Id })
+        <p>
+            <i class="fas fa-truck"></i>
+            <strong>Delivery in Romania:</strong> 1–3 business days
+        </p>
 
-<div>
-    <a asp-controller="Reviews" asp-action="Create" asp-route-bookId="@Model.Id" class="btn btn-primary">Add Review</a>
-</div>
+        <p>
+            <i class="fas fa-box-open"></i>
+            <strong>Pickup from Easybox:</strong> 1–3 business days
+        </p>
+    </div>
 
+    <!-- Reviews -->
+    <div class="mt-5">
+        <h4 class="section-title"><i class="fas fa-star text-warning"></i>Reviews</h4>
+        @await Component.InvokeAsync("BookReview", new { bookId = Model.Id })
 
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+        <a asp-controller="Reviews" asp-action="Create" asp-route-bookId="@Model.Id" class="btn btn-primary mt-3">
+            <i class="fas fa-pen"></i>Add Review
+        </a>
+    </div>
+
+    <!-- Navigation -->
+    <div class="mt-4">
+        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning me-2">Edit</a>
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
 </div>

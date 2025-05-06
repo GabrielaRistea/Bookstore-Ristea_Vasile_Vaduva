@@ -43,7 +43,8 @@ namespace Bookstore.Services
             {
                 Success = true,
                 UserId = user.Id.ToString(), // sau direct user.Id dacă e string
-                UserName = $"{user.FirstName} {user.LastName}" // sau Email
+                UserName = $"{user.FirstName} {user.LastName}",
+                UserRole = user.UserRole?.Type
             };
         }
         public async Task<AuthResultDto> RegisterAsync(RegisterDto registerRequest)
@@ -56,13 +57,18 @@ namespace Bookstore.Services
                 return new AuthResultDto { Success = false, ErrorMessage = "Passwords do not match" };
 
             CreatePasswordHash(registerRequest.Password, out var passwordHash);
-            
+
+
+            var userRole = await _authRepository.GetRoleByTypeAsync("user");
+            if (userRole == null)
+                throw new Exception("Default role 'user' not found in UserRoles table.");
             var user = new User
             {
                 Email = registerRequest.Email,
                 FirstName = registerRequest.FirstName,
                 LastName = registerRequest.LastName,
                 PasswordHash = passwordHash,
+                UserRoleId = userRole.Id
             };
             var createdUser = await _authRepository.AddAsync(user);
             await _authRepository.SaveChangesAsync();
