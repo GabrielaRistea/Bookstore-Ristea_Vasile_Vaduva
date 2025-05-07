@@ -1,0 +1,25 @@
+﻿@model Bookstore.DTOs.EditProfileDto
+@{
+    ViewData["Title"] = "EditProfile";
+}
+
+<h1>Edit Profile</h1>
+
+<form asp-action="EditProfile" method="post">
+    <div class="form-group">
+        <label asp-for="FirstName">First Name</label>
+        <input asp-for="FirstName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="LastName">Last Name</label>
+        <input asp-for="LastName" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Email" class="control-label"></label>
+        <input asp-for="Email" class="form-control" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+</form>

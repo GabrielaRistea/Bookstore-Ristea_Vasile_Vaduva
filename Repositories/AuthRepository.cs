@@ -45,5 +45,11 @@ namespace Bookstore.Repositories
         {
             return await _context.UserRoles.FirstOrDefaultAsync(r => r.Type == roleType);
         }
+        public async Task<User?> GetByIdAsync(int userId)
+        {
+            return await _context.Users
+                .Include(u => u.UserRole)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+        }
     }
 }

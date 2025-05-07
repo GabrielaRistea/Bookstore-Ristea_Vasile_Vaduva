@@ -39,11 +39,11 @@ namespace Bookstore.Controllers
             if (!_wishlistService.Exists(userId, bookId))
             {
                 _wishlistService.AddToWishlist(userId, bookId);
-                TempData["SuccessMessage"] = "Added to Wishlist Successfully";
+                TempData["SuccessMessageW"] = "Added to Wishlist Successfully";
             }
             else
             {
-                TempData["SuccessMessage"] = "Already added to Wishlist";
+                TempData["SuccessMessageW"] = "Already added to Wishlist";
             }
             if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
             {

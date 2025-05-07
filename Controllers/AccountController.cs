@@ -9,6 +9,8 @@ using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace Bookstore.Controllers
 {
@@ -37,20 +39,8 @@ namespace Bookstore.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> RegisterAsync( RegisterDto registerRequest)
         {
-            //if (!ModelState.IsValid)
-            //    return View(registerRequest);
             var authResult = await _authService.RegisterAsync(registerRequest);
 
-            //if (!authResult.Success)
-            //{
-            //    if (authResult.ErrorMessage == "It already exists an account with this email")
-            //    {
-            //        ModelState.AddModelError("Email", authResult.ErrorMessage);
-            //    }
-
-            //    ModelState.AddModelError(string.Empty, authResult.ErrorMessage);
-            //    return View(registerRequest);
-            //}
             if (!authResult.Success)
             {
                 
@@ -116,7 +106,6 @@ namespace Bookstore.Controllers
                 }
                 else
                 {
-                    // Adaugă eroarea pentru email/parolă greșite
                     ModelState.AddModelError(string.Empty, "Invalid email or password.");
                 }
                 return View(loginRequest);
@@ -132,7 +121,8 @@ namespace Bookstore.Controllers
             {
                 new Claim(ClaimTypes.NameIdentifier, authResult.UserId),
                 new Claim(ClaimTypes.Name, authResult.UserName),
-                new Claim(ClaimTypes.Role, authResult.UserRole)
+                new Claim(ClaimTypes.Role, authResult.UserRole),
+                new Claim(ClaimTypes.Email, authResult.User.Email),
             };
 
             var identity = new ClaimsIdentity(claims, "Cookies");
@@ -250,6 +240,89 @@ namespace Bookstore.Controllers
             await HttpContext.SignOutAsync();
             return RedirectToAction("Login", "Account");
         }
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Profile()
+        {
+            var userIdString = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdString, out int userId))
+                return BadRequest();
 
+            var user = await _authService.GetUserByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            return View(user);
+        }
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> EditProfile()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            var userName = User.FindFirstValue(ClaimTypes.Name);
+            var email = User.FindFirstValue(ClaimTypes.Email);
+
+            var user = await _authService.GetUserByIdAsync(int.Parse(userId));
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var editDto = new EditProfileDto
+            {
+                Id = user.Id,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
+                Email = user.Email
+            };
+
+            return View(editDto);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize]
+        public async Task<IActionResult> EditProfile(EditProfileDto model)
+        {
+            if (!ModelState.IsValid)
+                return View(model);
+
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
+            if (userIdClaim == null || !int.TryParse(userIdClaim.Value, out var userId))
+                return Unauthorized();
+
+            var user = await _authService.GetUserByIdAsync(userId);
+            if (user == null)
+                return NotFound();
+
+            // Actualizează informațiile utilizatorului
+            user.FirstName = model.FirstName;
+            user.LastName = model.LastName;
+            user.Email = model.Email;
+
+            await _authService.UpdateUserAsync(user);
+
+            var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new Claim(ClaimTypes.Name, $"{user.FirstName} {user.LastName}"),
+            new Claim(ClaimTypes.Email, user.Email),// adaptează dacă e cazul
+        };
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            // Reautentifică userul
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+
+            return RedirectToAction("Profile");
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> LogoutAndChangePassword()
+        {
+            await HttpContext.SignOutAsync();
+            return RedirectToAction("SendResetCode", "Account");
+        }
     }
 }
