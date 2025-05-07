@@ -1,49 +1,162 @@
 ﻿@model Bookstore.ViewModels.BookReviewViewModel
 
-<h4>Reviews</h4>
-
 @if (Model.Reviews.Any())
 {
-    <p><strong>Average Rating:</strong> @Model.AverageRating.ToString("0.0")/5</p>
-
-    <ul>
-        @foreach (var review in Model.Reviews)
-        {
-            <li>
-                <strong>@review.User?.FirstName @review.User?.LastName</strong> <br />
-                <div class="star-rating">
-                    @for (double i = 1; i <= 5; i++)
+    <div class="review-summary">
+        <h3>Reviews</h3>
+        <div class="rating-overview">
+            <div class="average-rating">
+                <div class="score">@Model.AverageRating.ToString("0.00")</div>
+                <div class="stars">
+                    @for (int i = 1; i <= 5; i++)
                     {
-                        <span class="star @(i <= review.Rating ? "full" : "empty")">★</span>
+                        <i class="fa @(i <= Math.Round(Model.AverageRating) ? "fa-star" : "fa-star-o")"></i>
                     }
                 </div>
-                
-            </li>
-            @review.Comm
-        }
-    </ul>
+               
+            </div>
+            <div class="bar-chart">
+                @for (int i = 5; i >= 1; i--)
+                {
+                    var count = Model.Reviews.Count(r => r.Rating == i);
+                    var percentage = Model.Reviews.Count() > 0 ? (count * 100 / Model.Reviews.Count()) : 0;
+                    <div class="bar-row">
+                        <span>@i stars</span>
+                        <div class="bar">
+                            <div class="fill" style="width:@percentage%"></div>
+                        </div>
+                        <span>@count</span>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <ul class="review-list">
+            @foreach (var review in Model.Reviews)
+            {
+                var initials = (review.User?.FirstName?[0].ToString() ?? "U");
+                <li class="review-item">
+                    <div class="avatar">@initials</div>
+                    <div class="review-body">
+                        <div class="review-header">
+                            <strong>@review.User?.FirstName @review.User?.LastName</strong>
+                            <div class="stars">
+                                @for (int i = 1; i <= 5; i++)
+                                {
+                                    <i class="fa @(i <= review.Rating ? "fa-star" : "fa-star-o")"></i>
+                                }
+                            </div>
+                        </div>
+                        <div class="review-comment">@review.Comm</div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
 }
 else
 {
     <p>No reviews yet.</p>
 }
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
 <style>
-    .star-rating {
-        display: inline-block;
+    .review-summary {
+        max-width: 800px;
+        margin: auto;
     }
 
-    .star {
-        font-size: 20px;
-        color: #ddd;
-        padding: 0 2px;
+    .rating-overview {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
     }
 
-        .star.full {
+    .average-rating {
+        text-align: center;
+    }
+
+        .average-rating .score {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .average-rating .stars {
+            color: gold;
+            font-size: 18px;
+            margin: 5px 0;
+        }
+
+        .average-rating .total {
+            color: #888;
+            font-size: 14px;
+        }
+
+    .bar-chart {
+        flex-grow: 1;
+    }
+
+    .bar-row {
+        display: flex;
+        align-items: center;
+        margin: 4px 0;
+        font-size: 14px;
+    }
+
+        .bar-row .bar {
+            background: #eee;
+            flex: 1;
+            margin: 0 10px;
+            height: 10px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .bar-row .fill {
+            background: #4CAF50;
+            height: 100%;
+        }
+
+    .review-list {
+        list-style: none;
+        padding: 0;
+    }
+
+    .review-item {
+        display: flex;
+        margin-bottom: 20px;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+    }
+
+    .avatar {
+        background: #f1c40f;
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        line-height: 40px;
+        font-weight: bold;
+        margin-right: 15px;
+    }
+
+    .review-body {
+        flex: 1;
+    }
+
+    .review-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+        .review-header .stars i {
             color: gold;
         }
 
-        .star.empty {
-            color: #ddd;
-        }
+    .review-comment {
+        margin: 8px 0;
+    }
 </style>
