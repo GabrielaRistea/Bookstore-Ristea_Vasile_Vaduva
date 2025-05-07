@@ -1,7 +1,9 @@
 ﻿using Bookstore.Models;
+using Bookstore.Repositories;
 using Bookstore.Repositories.Interfaces;
 using Bookstore.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol.Core.Types;
 
 namespace Bookstore.Services
 {
@@ -85,14 +87,22 @@ namespace Bookstore.Services
             _orderItemRepo.Save();
         }
 
-        public void FinalizeOrder(int userId)
-        {
-            var cart = GetOrCreateCart(userId);
-            cart.statusOrder = "Finished";
-            cart.Date = DateTime.Now;
-            _orderRepo.Update(cart);
-            _orderRepo.Save();
-        }
+        //public Order FinalizeOrder(int userId)
+        //{
+        //    var cart = _orderRepo.Orders
+        //        .Include(o => o.OrderItems)
+        //        .FirstOrDefault(o => o.IdUser == userId && !o.IsFinalized);
+
+        //    if (cart == null) return null;
+
+        //    cart.IsFinalized = true;
+        //    cart.OrderDate = DateTime.Now;
+        //    _orderRepo.Save();
+
+        //    return cart;
+        //}
+
+
 
         public Order GetCartWithItems(int userId)
         {
@@ -101,6 +111,30 @@ namespace Bookstore.Services
                              .ThenInclude(oi => oi.Book)
                              .FirstOrDefault();
         }
+
+        public Order? GetOrderById(int orderId)
+        {
+            return _orderRepo.FindByCondition(o => o.Id == orderId)
+                     .Include(o => o.OrderItems)
+                     .ThenInclude(oi => oi.Book)
+                     .FirstOrDefault();
+        }
+
+        public int MarkOrderAsFinished(Order order)
+        {
+            order.statusOrder = "Finished";
+            order.Date = DateTime.Now.ToUniversalTime();
+            _orderRepo.Update(order);
+            _orderRepo.Save();
+            return order.Id; // returnăm ID-ul
+        }
+
+        public string? GetUserEmailById(int userId)
+        {
+            return _orderRepo.GetUserEmailById(userId);
+        }
+
+
     }
 
 }
