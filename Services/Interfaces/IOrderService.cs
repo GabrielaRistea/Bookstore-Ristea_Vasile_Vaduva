@@ -9,7 +9,12 @@ namespace Bookstore.Services.Interfaces
         void AddToCart(int userId, int bookId, int quantity);
         void RemoveFromCart(int userId, int bookId);
         void ClearCart(int userId);
-        void FinalizeOrder(int userId);
+        //Order FinalizeOrder(int userId);
+
         Order GetCartWithItems(int userId);
+        Order? GetOrderById(int orderId);
+        int MarkOrderAsFinished(Order order);
+
+        string? GetUserEmailById(int userId);
     }
 }

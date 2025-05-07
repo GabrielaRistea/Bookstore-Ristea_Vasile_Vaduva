@@ -1,17 +1,25 @@
 ﻿using Bookstore.Models;
+using Bookstore.Services;
 using Bookstore.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Net.Mail;
 using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Bookstore.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly IOrderService _orderService;
+        private readonly IMailService _mailService;
+        private readonly IAddressService _addressService;
 
-        public OrdersController(IOrderService orderService)
+        public OrdersController(IOrderService orderService, IMailService mailService, IAddressService addressService)
         {
             _orderService = orderService;
+            _mailService = mailService;
+            _addressService = addressService;
         }
 
         // Metodă privată pentru a extrage userId din claims
@@ -25,6 +33,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: /Orders (Coșul de cumpărături)
+        [Authorize(Roles = "user")]
         public IActionResult Index()
         {
             var userId = GetCurrentUserId();
@@ -32,9 +41,22 @@ namespace Bookstore.Controllers
             return View(cart);
         }
 
+        //public IActionResult Details(int id)
+        //{
+        //    var order = _orderService.GetOrderById(id); 
+        //    if (order == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    return View(order);
+        //}
+
+
         // POST: /Orders/AddToCart
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
         public IActionResult AddToCart(int bookId, int quantity)
         {
             var userId = GetCurrentUserId();
@@ -51,6 +73,7 @@ namespace Bookstore.Controllers
         // POST: /Orders/RemoveFromCart
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
         public IActionResult RemoveFromCart(int bookId)
         {
             var userId = GetCurrentUserId();
@@ -61,6 +84,7 @@ namespace Bookstore.Controllers
         // POST: /Orders/ClearCart
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
         public IActionResult ClearCart()
         {
             var userId = GetCurrentUserId();
@@ -68,24 +92,99 @@ namespace Bookstore.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /Orders/Checkout
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // GET: /Orders/Checkout
+        [Authorize(Roles = "user")]
         public IActionResult Checkout()
         {
             var userId = GetCurrentUserId();
-            _orderService.FinalizeOrder(userId);
-            return RedirectToAction(nameof(OrderConfirmation));
+            var cart = _orderService.GetCartWithItems(userId);
+            if (cart == null)
+            {
+                return NotFound();
+            }
+
+            var address = _addressService.GetAddressByUserId(userId);
+            ViewBag.Address = address; // o trimiți către view
+
+            //if (TempData["ReturnCheckoutUrl"] == null)
+            //{
+            //    TempData["ReturnCheckoutUrl"] = "/Orders/Checkout";
+            //}
+
+            return View(cart);
         }
 
-        // GET: /Orders/OrderConfirmation
-        public IActionResult OrderConfirmation()
+
+        // POST: /Orders/PlaceOrder
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
+        public IActionResult PlaceOrder(string DeliveryMethod, string PaymentMethod, string TotalPrice)
         {
-            return View();
+            var userId = GetCurrentUserId();
+            var cart = _orderService.GetCartWithItems(userId);
+            if (cart == null)
+                return NotFound();
+
+            var address = _addressService.GetAddressByUserId(userId);
+            if (address == null)
+                return NotFound("Address not found.");
+
+            var orderId = _orderService.MarkOrderAsFinished(cart);
+            return RedirectToAction("OrderConfirmation", "Orders", new { id = orderId });
+        }
+
+        [Authorize(Roles = "user")]
+        public async Task<IActionResult> OrderConfirmation(int id)
+        {
+            var order = _orderService.GetOrderById(id);
+            if (order == null)
+                return NotFound();
+            var defaultDeliveryFee = 9.99f;
+            var total = defaultDeliveryFee + order.OrderItems.Sum(item => item.Book.Price * item.Quantity);
+            var date = order.Date.ToString("dd.MM.yyyy HH:mm");
+
+            var address = _addressService.GetAddressByUserId(order.IdUser);
+            var addressDetails = address != null ? $"{address.Street}, {address.City}, {address.ZipCode}, {address.County}" : "No address available";
+
+            var itemDetails = string.Join("\n", order.OrderItems.Select(item => $"{item.Book.Title} (x{item.Quantity})"));
+
+            var mailBody = $@"
+Thank you for your order!
+
+Order Number: #{order.Id}
+Date: {date}
+Total: {total:0.00} Lei
+Delivery Address: {addressDetails}
+
+Items ordered:
+{itemDetails}
+
+We appreciate your trust in Bookstore!
+";
+
+            var mail = new MailMessage
+            {
+                Subject = "Order Confirmation - Bookstore",
+                Body = mailBody,
+                IsBodyHtml = false
+            };
+
+            var userEmail = _orderService.GetUserEmailById(order.IdUser);
+            if (!string.IsNullOrEmpty(userEmail))
+            {
+                mail.To.Add(userEmail);
+                mail.From = new MailAddress("MS_lorIzz@test-69oxl5eex2xl785k.mlsender.net", "Bookstore App");
+                await _mailService.SendEmailAsync(mail);
+            }
+
+            _orderService.ClearCart(order.IdUser);
+            return View(order);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
         public IActionResult IncreaseQuantity(int bookId)
         {
             var userId = GetCurrentUserId();
@@ -95,6 +194,7 @@ namespace Bookstore.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "user")]
         public IActionResult DecreaseQuantity(int bookId)
         {
             var userId = GetCurrentUserId();

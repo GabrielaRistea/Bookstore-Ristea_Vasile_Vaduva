@@ -1,0 +1,24 @@
+﻿@model Bookstore.Models.Order
+
+@{
+    ViewData["Title"] = "Order Confirmation";
+}
+
+<div class="container text-center py-5">
+    <div class="card shadow-sm p-5 rounded-4">
+        <i class="fa-solid fa-circle-check text-success mb-3" style="font-size: 3rem;"></i>
+        <h2 class="mb-3">Order Confirmed!</h2>
+        <p class="lead mb-4">Thank you for your purchase. Your order has been successfully placed.</p>
+
+        <h4 class="mb-3">Order Number: <span class="text-primary">#@Model.Id</span></h4>
+
+        <div class="mb-4">
+            <p><strong>Status:</strong> @Model.statusOrder</p>
+            <p><strong>Date:</strong> @Model.Date.ToString("dd MMMM yyyy, HH:mm")</p>
+        </div>
+
+        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary px-4">
+            <i class="fa-solid fa-house"></i> Back to Homepage
+        </a>
+    </div>
+</div>
