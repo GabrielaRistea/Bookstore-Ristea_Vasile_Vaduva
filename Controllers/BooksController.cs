@@ -10,6 +10,7 @@ using Bookstore.Models;
 using Bookstore.Services.Interfaces;
 using Bookstore.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace Bookstore.Controllers
 {
@@ -180,8 +181,6 @@ namespace Bookstore.Controllers
 
             return View(genreDto);
         }
-
-
         private BookDto mapBook(Book b)
         {
             return new BookDto()
