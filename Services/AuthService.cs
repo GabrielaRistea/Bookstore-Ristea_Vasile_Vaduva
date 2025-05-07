@@ -5,6 +5,7 @@ using Bookstore.Services.Interfaces;
 using MapsterMapper;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNetCore.Identity.Data;
+using Microsoft.EntityFrameworkCore;
 using static Bookstore.Utils.PasswordUtils;
 
 namespace Bookstore.Services
@@ -18,15 +19,6 @@ namespace Bookstore.Services
             _authRepository = authRepository;
             _mapper = mapper;
         }
-        //public async Task<LogInDto> LoginAsync(LogInDto loginRequest)
-        //{
-        //    var user = await _authRepository.GetByEmailAsync(loginRequest.Email);
-        //    if (user == null || !VerifyPasswordHash(loginRequest.Password, user.PasswordHash))
-        //        return null;
-        //    await _authRepository.SaveChangesAsync();
-        //    var userLogIn = _mapper.Map<LogInDto>(user);
-        //    return userLogIn;
-        //}
         public async Task<AuthResultDto> LoginAsync(LogInDto loginRequest)
         {
             var user = await _authRepository.GetByEmailAsync(loginRequest.Email);
@@ -42,9 +34,10 @@ namespace Bookstore.Services
             return new AuthResultDto
             {
                 Success = true,
-                UserId = user.Id.ToString(), // sau direct user.Id dacă e string
+                UserId = user.Id.ToString(), 
                 UserName = $"{user.FirstName} {user.LastName}",
-                UserRole = user.UserRole?.Type
+                UserRole = user.UserRole?.Type,
+                User = user,
             };
         }
         public async Task<AuthResultDto> RegisterAsync(RegisterDto registerRequest)
@@ -104,6 +97,14 @@ namespace Bookstore.Services
         public async Task<User?> GetUserByEmailAsync(string email)
         {
             return await _authRepository.GetByEmailAsync(email);
+        }
+        public async Task<User?> GetUserByIdAsync(int userId)
+        {
+            return await _authRepository.GetByIdAsync(userId);
+        }
+        public async Task UpdateUserAsync(User user)
+        {
+            await _authRepository.UpdateUserAsync(user);
         }
 
     }

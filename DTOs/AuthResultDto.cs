@@ -10,6 +10,7 @@ namespace Bookstore.DTOs
         public string UserName { get; set; }
         public User User { get; set; }
         public string UserRole { get; set; }
+        public string Email { get; set; }
     }
 
 }

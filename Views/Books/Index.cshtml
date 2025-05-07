@@ -24,14 +24,14 @@
 
 <h2>Books</h2>
 
-@if (TempData["SuccessMessage"] != null)
+@if (TempData["SuccessMessageW"] != null)
 {
-    <div class="alert alert-success" role="alert" id="successMessage">
-        @TempData["SuccessMessage"]
+    <div class="alert alert-success" role="alert" id="successMessageW">
+        @TempData["SuccessMessageW"]
     </div>
     <script>
         setTimeout(function() {
-            document.getElementById("successMessage").style.display = 'none';
+            document.getElementById("successMessageW").style.display = 'none';
         }, 4000);
     </script>
 }

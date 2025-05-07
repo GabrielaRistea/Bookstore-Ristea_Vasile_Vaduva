@@ -1,0 +1,107 @@
+﻿@model Bookstore.Models.User
+
+@{
+    ViewData["Title"] = "Profile";
+}
+@Html.AntiForgeryToken()
+
+<style>
+    .profile-section {
+        background-color: #1e1e2f; /* mov închis */
+        color: white;
+        padding: 60px 20px 100px 20px;
+        border-radius: 10px;
+        max-width: 700px;
+        margin: 40px auto;
+        text-align: center;
+    }
+
+    .avatar-circle {
+        width: 120px;
+        height: 120px;
+        font-size: 48px;
+        background-color: #008080;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto 20px auto;
+    }
+
+    .text-muted-custom {
+        color: #ccc;
+    }
+
+    .btn-custom {
+        width: 180px; 
+        height: 50px; 
+        margin: 8px;
+        padding: 10px;
+        font-size: 16px;
+        font-weight: 500;
+        border-radius: 8px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+    }
+
+        .btn-custom i {
+            margin-right: 8px;
+            font-size: 18px;
+        }
+
+    .btn-group-custom {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 10px;
+        justify-items: center;
+    }
+
+
+    a.text-primary {
+        color: #9abfff;
+    }
+</style>
+
+
+<div class="profile-section shadow">
+    <div class="avatar-circle">
+        @Model.FirstName?.FirstOrDefault().ToString().ToUpper()
+    </div>
+
+    <h3 class="mb-1"><strong>@Model.FirstName @Model.LastName</strong></h3>
+    @* <p class="mb-0 text-muted-custom">@Model.Email</p> *@
+    <p class="mb-3">@Model.Email</p>
+
+    <a href="@Url.Action("EditProfile", "Account")" class="text-decoration-none text-primary mb-4 d-block">
+        Edit your profile
+    </a>
+    <div class="btn-group-custom">
+
+    <div class="d-flex flex-wrap justify-content-center">
+        <form asp-action="LogoutAndChangePassword" asp-controller="Account" method="post" class="d-inline">
+            <button type="submit" class="btn btn-warning btn-custom">
+                <i class="fa fa-key"></i> Change Password
+            </button>
+        </form>
+
+       
+
+        <a href="@Url.Action("OrderHistory", "Account")" class="btn btn-info btn-custom">
+            <i class="fa fa-history"></i> Order History
+        </a>
+
+        <a href="@Url.Action("Addresses", "Account")" class="btn btn-secondary btn-custom">
+            <i class="fa fa-address-book"></i> Address
+        </a>
+        <form asp-action="Logout" asp-controller="Account" method="post" class="d-inline">
+            @Html.AntiForgeryToken()
+            <button type="submit" class="btn btn-danger btn-custom">
+                <i class="fa fa-sign-out-alt"></i> Log Out
+            </button>
+        </form>
+    </div>
+    </div>
+</div>
