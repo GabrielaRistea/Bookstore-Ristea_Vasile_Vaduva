@@ -44,6 +44,9 @@ builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 
+builder.Services.AddScoped<IWishlistRepository, WishlistRepository>();
+builder.Services.AddScoped<IWishlistService, WishlistService>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.

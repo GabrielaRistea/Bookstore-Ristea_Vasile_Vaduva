@@ -175,16 +175,28 @@
             background: none;
             cursor: pointer;
             padding: 0;
-            font-size: 1.5rem; /* mai mare */
-            color: black; /* contur alb */
+            font-size: 1.5rem; 
+            color: black; 
             transition: color 0.3s ease;
         }
 
             .wishlist-btn:hover {
-                color: #dc3545; /* roșu la hover */
+                color: #dc3545; 
             }
     </style>
 </head>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success" role="alert" id="successMessage">
+        @TempData["SuccessMessage"]
+    </div>
+    <script>
+        setTimeout(function() {
+            document.getElementById("successMessage").style.display = 'none';
+        }, 4000);
+    </script>
+}
 
 <div class="title-container">
     <h1 class="title">@Model.Name</h1>
@@ -222,9 +234,13 @@
                     <div class="card-body d-flex flex-column">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h5 class="card-title">@book.Title</h5>
-                            <button class="wishlist-btn" title="Add to Wishlist">
-                                <i class="far fa-heart"></i>
-                            </button>
+                            <form asp-controller="Wishlists" asp-action="AddToWishlist" method="post">
+                                <input type="hidden" name="bookId" value="@book.Id" />
+                                <input type="hidden" name="returnUrl" value="@($"{Context.Request.Path}{Context.Request.QueryString}")" />
+                                <button class="wishlist-btn" title="Add to Wishlist">
+                                    <i class="far fa-heart"></i>
+                                </button>
+                            </form>
                         </div>
                         <p class="card-text text-danger fw-bold">@book.Price.ToString("0.0") Lei</p>
                         <a href="#" class="btn btn-outline-primary mt-auto">
