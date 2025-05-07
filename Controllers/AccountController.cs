@@ -121,6 +121,13 @@ namespace Bookstore.Controllers
                 }
                 return View(loginRequest);
             }
+            if (string.IsNullOrEmpty(authResult.UserId) ||
+                string.IsNullOrEmpty(authResult.UserName) ||
+                string.IsNullOrEmpty(authResult.UserRole))
+            {
+                ModelState.AddModelError(string.Empty, "Invalid email or password.");
+                return View(loginRequest);
+            }
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.NameIdentifier, authResult.UserId),

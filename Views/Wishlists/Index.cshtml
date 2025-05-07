@@ -1,0 +1,131 @@
+﻿@model IEnumerable<Bookstore.Models.WishlistBook>
+
+@{
+    ViewData["Title"] = "Add To Wishlist";
+}
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+
+<style>
+    .wishlist-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .wishlist-title {
+        font-size: 28px;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    .wishlist-count {
+        color: gray;
+        margin-bottom: 30px;
+    }
+
+    .book-card {
+        display: flex;
+        border-bottom: 1px solid #eee;
+        padding: 20px 0;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .book-image {
+        width: 90px;
+        height: 130px;
+        margin-right: 20px;
+        overflow: hidden;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+        .book-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+    .book-details {
+        flex: 1;
+    }
+
+    .book-title {
+        font-size: 18px;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+
+    .book-price {
+        font-size: 20px;
+        color: red;
+        font-weight: bold;
+    }
+
+    .btn-add {
+        background: linear-gradient(90deg, #7e26dc, #c029b2);
+        color: white;
+        border: none;
+        padding: 10px 18px;
+        border-radius: 6px;
+        font-weight: 500;
+        cursor: pointer;
+    }
+
+    .btn-remove {
+        color: #777;
+        font-size: 14px;
+        margin-top: 10px;
+        background: none;
+        border: none;
+        text-decoration: underline;
+        cursor: pointer;
+    }
+
+  
+</style>
+
+<div class="wishlist-container">
+    <div class="wishlist-title">Wishlist</div>  
+    <div class="wishlist-count">@Model.Count() products</div>
+
+    @if (!Model.Any())
+    {
+        <p>Empty wishlist</p>
+    }
+    else
+    {
+        @foreach (var item in Model)
+        {
+            <div class="book-card">
+                <div class="book-image">
+                    @if (item.Book.BookImage != null)
+                    {
+                        var base64 = Convert.ToBase64String(item.Book.BookImage);
+                        var imageSrc = $"data:image/png;base64,{base64}";
+                        <img src="@imageSrc" alt="cover" />
+                    }
+                    else
+                    {
+                        <img src="~/images/default-book.png" alt="fără imagine" />
+                    }
+                </div>
+
+                <div class="book-details">
+                    <div class="book-title">@item.Book.Title</div>
+                    <div class="book-price">@item.Book.Price Lei</div>
+
+                    <form asp-controller="Wishlists"asp-action="RemoveFromWishlist"  method="post">
+                        <input type="hidden" name="bookId" value="@item.IdBook" />
+                        <button type="submit" class="btn-remove">Remove</button>
+                    </form>
+                </div>
+
+                    <button type="submit" class="btn-add">
+                        <i class="fa fa-cart-plus"></i> Add to cart
+                    </button>
+            </div>
+        }
+    }
+</div>
