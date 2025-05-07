@@ -1,0 +1,135 @@
+﻿@model Bookstore.Models.Order
+@{
+    ViewData["Title"] = "Checkout";
+    var totalItems = Model.OrderItems.Sum(i => i.Book.Price * i.Quantity);
+    var defaultDeliveryFee = 9.99f;
+    var total = totalItems + defaultDeliveryFee;
+    bool hasAddress = ViewBag.Address != null;
+}
+
+<h2 class="mb-4">Checkout</h2>
+
+<form asp-action="PlaceOrder" asp-controller="Orders" method="post" id="checkoutForm">
+    @Html.AntiForgeryToken()
+    <div class="row">
+        <!-- Detalii livrare -->
+        <div class="col-md-7">
+            <h4 class="mb-3">Delivery Details</h4>
+
+            @if (hasAddress)
+            {
+                var address = (Bookstore.Models.Address)ViewBag.Address;
+
+                <div class="card p-3 mb-3 shadow-sm rounded-4">
+                    <p class="mb-1"><strong>Street:</strong> @address.Street</p>
+                    <p class="mb-1"><strong>City:</strong> @address.City</p>
+                    <p class="mb-1"><strong>County:</strong> @address.County</p>
+                    <p class="mb-1"><strong>Zip Code:</strong> @address.ZipCode</p>
+                    <p class="mb-1"><strong>Phone:</strong> @address.PhoneNumber</p>
+                    <a asp-controller="Addresses" asp-action="Edit" asp-route-ReturnUrl="@Context.Request.Path" class="btn btn-sm btn-outline-primary mt-2">Edit Address</a>
+                </div>
+
+                <!-- Trimite datele ascuns -->
+                <input type="hidden" name="Street" value="@address.Street" />
+                <input type="hidden" name="City" value="@address.City" />
+                <input type="hidden" name="ZipCode" value="@address.ZipCode" />
+                @* <input type="hidden" name="Country" value="România" /> *@
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    You don't have a saved address. Please add one to continue.
+                </div>
+                <a asp-controller="Addresses" asp-action="Create" asp-route-ReturnUrl="@Context.Request.Path" class="btn btn-primary mb-3">Add Address</a>
+            }
+
+            <h4 class="mt-4 mb-3">Delivery Method</h4>
+            <div class="card p-3 mb-3 shadow-sm rounded-4">
+                <p class="mb-1">Standard (+9.99 Lei)</p>
+                <input type="hidden" name="DeliveryMethod" value="9.99" />
+            </div>
+
+
+            <h4 class="mt-4 mb-3">Payment Method</h4>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="card" value="Card" checked required />
+                <label class="form-check-label" for="card">Card</label>
+            </div>
+            <div class="form-check mb-4">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="cash" value="Cash" required />
+                <label class="form-check-label" for="cash">Cash</label>
+            </div>
+        </div>
+
+        <!-- Sumar comandă -->
+        <div class="col-md-5">
+            <div class="card p-4 shadow-sm rounded-4 mt-5">
+                <div class="row">
+                    <div class="col-8">
+                        <p class="mb-2">Subtotal</p>
+                        <p class="mb-0 text-muted">Delivery Fee</p>
+                    </div>
+                    <div class="col-4 text-end">
+                        <p class="mb-2">@totalItems.ToString("0.00") Lei</p>
+                        <p class="mb-0 text-muted delivery-fee">@defaultDeliveryFee.ToString("0.00") Lei</p>
+                    </div>
+                </div>
+
+                <hr />
+
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <p class="fw-bold mb-0">Total:</p>
+                        <h4 class="fw-bold text-success total-price">@total.ToString("0.00") Lei</h4>
+                    </div>
+                    <button type="submit" class="btn btn-primary" id="placeOrderBtn" @(hasAddress ? "" : "disabled")>
+                        <i class="fa-solid fa-angles-right me-1"></i> Place Order
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <input type="hidden" name="TotalPrice" id="totalPrice" value="@total.ToString("0.00")" />
+</form>
+
+<div>
+    <a asp-controller="Orders" asp-action="Index" class="btn btn-outline-secondary px-3 mt-3">
+        <i class="fa-solid fa-arrow-left me-1"></i> Back
+    </a>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const deliverySelect = document.getElementById("deliveryMethod");
+            const deliveryFeeElement = document.querySelector(".delivery-fee");
+            const totalElement = document.querySelector(".total-price");
+            const totalPriceInput = document.getElementById("totalPrice");
+
+            const baseTotal = parseFloat("@totalItems");
+
+            function updateTotal() {
+                const selectedFee = parseFloat(deliverySelect.value);
+                const newTotal = (baseTotal + selectedFee).toFixed(2);
+                deliveryFeeElement.textContent = selectedFee.toFixed(2) + " Lei";
+                totalElement.textContent = newTotal + " Lei";
+                totalPriceInput.value = newTotal;
+            }
+
+            deliverySelect.addEventListener("change", updateTotal);
+            updateTotal();
+
+            const placeOrderBtn = document.getElementById("placeOrderBtn");
+
+            // Dacă butonul este dezactivat, nu face nimic
+            placeOrderBtn?.addEventListener("click", function (e) {
+                if (placeOrderBtn.hasAttribute("disabled")) {
+                    e.preventDefault();
+                    alert("You must add an address before placing the order.");
+                    return;
+                }
+            });
+        });
+    </script>
+}

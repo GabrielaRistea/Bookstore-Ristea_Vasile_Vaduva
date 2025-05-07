@@ -14,5 +14,6 @@ namespace Bookstore.Models
         [ForeignKey(nameof(User))]
         public int IdUser { get; set; }
         public User User { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }

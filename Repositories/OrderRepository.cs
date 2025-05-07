@@ -29,5 +29,13 @@ namespace Bookstore.Repositories
             _context.SaveChanges();
         }
 
+        public string? GetUserEmailById(int userId)
+        {
+            return _context.Users
+                           .Where(u => u.Id == userId)
+                           .Select(u => u.Email)
+                           .FirstOrDefault();
+        }
+
     }
 }
