@@ -1,0 +1,60 @@
+﻿@model Bookstore.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+    decimal deliveryFee = 9.99m;
+    decimal subtotal = Model.OrderItems.Sum(i => (decimal)i.Book.Price * i.Quantity);
+    decimal total = subtotal + deliveryFee;
+}
+
+<h1 class="mb-4">Order #@Model.Id</h1>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <p><strong>Date:</strong> @Model.Date.ToLocalTime().ToString("f")</p>
+            </div>
+            <div class="col-md-6 text-md-end">
+                <p>
+                    <strong>Status:</strong>
+                    <span class="badge @(Model.statusOrder == "Finished" ? "bg-success" : "bg-warning text-dark")">
+                        @Model.statusOrder
+                    </span>
+                </p>
+            </div>
+        </div>
+
+        <table class="table table-hover table-bordered align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>Book Title</th>
+                    <th class="text-end">Unit Price</th>
+                    <th class="text-center">Quantity</th>
+                    <th class="text-end">Subtotal</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrderItems)
+                {
+                    <tr>
+                        <td>@item.Book.Title</td>
+                        <td class="text-end">@item.Book.Price.ToString("0.00") lei</td>
+                        <td class="text-center">@item.Quantity</td>
+                        <td class="text-end">@((item.Book.Price * item.Quantity).ToString("0.00")) lei</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="mt-4">
+            <p><strong>Subtotal:</strong> @subtotal.ToString("0.00") lei</p>
+            <p><strong>Delivery Fee:</strong> @deliveryFee.ToString("0.00") lei</p>
+            <h4><strong>Total:</strong> @total.ToString("0.00") lei</h4>
+        </div>
+
+        <a asp-action="Index" class="btn btn-outline-secondary mt-3">
+            ← Back to History
+        </a>
+    </div>
+</div>

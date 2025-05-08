@@ -1,37 +1,61 @@
 ﻿@model Bookstore.Models.Address
 
 @{
-    // construiește returnUrl din Path + QueryString
     var returnUrl = Context.Request.Path + Context.Request.QueryString;
 }
 
-<h2>Your Address</h2>
+<div class="container mt-5">
+    <h2 class="mb-4">
+        <i class="fas fa-map-marker-alt me-2"></i>Your Address
+    </h2>
 
-@if (Model == null)
-{
-    <p>No address found.</p>
-    <!-- trimite returnUrl -->
-    <a asp-action="Create"
-       asp-route-ReturnUrl="@returnUrl"
-       class="btn btn-primary">
-        Add Address
-    </a>
-}
-else
-{
-    <p>@Model.Street, @Model.City, @Model.County, @Model.ZipCode</p>
+    @if (Model == null)
+    {
+        <div class="alert alert-warning" role="alert">
+            <i class="fas fa-exclamation-circle me-2"></i>No address found.
+        </div>
 
-    <a asp-action="Edit"
-       asp-route-id="@Model.Id"
-       asp-route-ReturnUrl="@returnUrl"
-       class="btn btn-sm btn-outline-primary">
-        Edit
-    </a>
+        <a asp-action="Create"
+           asp-route-ReturnUrl="@returnUrl"
+           class="btn btn-primary">
+            <i class="fas fa-plus me-2"></i>Add Address
+        </a>
+    }
+    else
+    {
+        <div class="card shadow-sm p-3 mb-3 bg-body rounded">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <i class="fas fa-home me-2"></i>Current Address
+                </h5>
+                <p class="card-text mb-1">
+                    <i class="fas fa-location-dot me-2 text-muted"></i>
+                    @Model.Street, @Model.City, @Model.County, @Model.ZipCode
+                </p>
+                <p class="card-text">
+                    <i class="fas fa-phone me-2 text-muted"></i>@Model.PhoneNumber
+                </p>
 
-    <a asp-action="Delete"
-       asp-route-id="@Model.Id"
-       asp-route-ReturnUrl="@returnUrl"
-       class="btn btn-sm btn-outline-danger">
-        Delete
+                <div class="d-flex gap-2 mt-3">
+                    <a asp-action="Edit"
+                       asp-route-id="@Model.Id"
+                       asp-route-ReturnUrl="@returnUrl"
+                       class="btn btn-outline-primary btn-sm">
+                        <i class="fas fa-edit me-1"></i>Edit
+                    </a>
+
+                    <a asp-action="Delete"
+                       asp-route-id="@Model.Id"
+                       asp-route-ReturnUrl="@returnUrl"
+                       class="btn btn-outline-danger btn-sm">
+                        <i class="fas fa-trash-alt me-1"></i>Delete
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+
+    <a asp-controller="Account" asp-action="Profile" class="btn btn-secondary mt-2">
+        <i class="fas fa-arrow-left me-2"></i>Back
     </a>
-}
+</div>

@@ -1,0 +1,49 @@
+﻿@model IEnumerable<Bookstore.Models.Order>
+@{
+    ViewData["Title"] = "Order History";
+}
+
+<h1 class="mb-4">Order History</h1>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info shadow-sm">
+        <i class="bi bi-info-circle-fill me-2"></i> You have no past orders.
+    </div>
+}
+else
+{
+    <div class="d-flex flex-column gap-4">
+        @foreach (var order in Model)
+        {
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h5 class="mb-0">Order #@order.Id</h5>
+                        <span class="text-muted">@order.Date.ToLocalTime().ToString("f")</span>
+                    </div>
+
+                    <ul class="list-group list-group-flush mb-3">
+                        @foreach (var item in order.OrderItems)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>@item.Book.Title</span>
+                                <span class="badge bg-primary rounded-pill"> x @item.Quantity</span>
+                            </li>
+                        }
+                    </ul>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span><strong>Total Items:</strong> @order.OrderItems.Sum(i => i.Quantity)</span>
+                        <a class="btn btn-outline-primary"
+                           asp-controller="HistoryOrders"
+                           asp-action="Details"
+                           asp-route-id="@order.Id">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

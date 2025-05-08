@@ -11,11 +11,13 @@ namespace Bookstore.Services
     {
         private readonly IOrderRepository _orderRepo;
         private readonly IOrderItemRepository _orderItemRepo;
+        private readonly IHistoryRepository _historyRepo;
 
-        public OrderService(IOrderRepository orderRepo, IOrderItemRepository orderItemRepo)
+        public OrderService(IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IHistoryRepository historyRepo)
         {
             _orderRepo = orderRepo;
             _orderItemRepo = orderItemRepo;
+            _historyRepo = historyRepo;
         }
 
         public Order GetOrCreateCart(int userId)
@@ -56,7 +58,8 @@ namespace Bookstore.Services
                 {
                     IdOrder = cart.Id,
                     IdBook = bookId,
-                    Quantity = quantity
+                    Quantity = quantity,
+                    Book = null // foarte important!
                 };
                 _orderItemRepo.Add(newItem);
             }
@@ -120,13 +123,42 @@ namespace Bookstore.Services
                      .FirstOrDefault();
         }
 
-        public int MarkOrderAsFinished(Order order)
+        public int? MarkOrderAsFinished(Order order)
         {
-            order.statusOrder = "Finished";
-            order.Date = DateTime.Now.ToUniversalTime();
-            _orderRepo.Update(order);
+            // Filtrare OrderItems - păstrează doar cele ale căror cărți nu au fost șterse
+            var validItems = order.OrderItems
+                                  .Where(oi => oi.Book != null)
+                                  .ToList();
+
+            // Dacă toate cărțile au fost șterse, nu salvăm nimic
+            if (!validItems.Any())
+            {
+                return null;
+            }
+
+            // DOAR acum creăm istoricul
+            var history = new HistoryOrders();
+            _historyRepo.Create(history);
+            _historyRepo.Save();
+
+            // Creează comanda finalizată
+            var finalizedOrder = new Order
+            {
+                IdUser = order.IdUser,
+                Date = DateTime.UtcNow,
+                statusOrder = "Finished",
+                IdHistoryOrders = history.Id,
+                OrderItems = validItems.Select(oi => new OrderItem
+                {
+                    IdBook = oi.IdBook,
+                    Quantity = oi.Quantity
+                }).ToList()
+            };
+
+            _orderRepo.Create(finalizedOrder);
             _orderRepo.Save();
-            return order.Id; // returnăm ID-ul
+
+            return finalizedOrder.Id;
         }
 
         public string? GetUserEmailById(int userId)

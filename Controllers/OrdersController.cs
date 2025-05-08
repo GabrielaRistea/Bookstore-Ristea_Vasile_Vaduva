@@ -22,7 +22,6 @@ namespace Bookstore.Controllers
             _addressService = addressService;
         }
 
-        // Metodă privată pentru a extrage userId din claims
         public int GetCurrentUserId()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
@@ -40,18 +39,6 @@ namespace Bookstore.Controllers
             var cart = _orderService.GetCartWithItems(userId);
             return View(cart);
         }
-
-        //public IActionResult Details(int id)
-        //{
-        //    var order = _orderService.GetOrderById(id); 
-        //    if (order == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(order);
-        //}
-
 
         // POST: /Orders/AddToCart
         [HttpPost]
