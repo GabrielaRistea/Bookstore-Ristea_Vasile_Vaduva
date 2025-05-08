@@ -143,10 +143,7 @@ namespace Bookstore.Services
                 }).ToList()
             };
 
-            _orderRepo.Create(finalizedOrder);
-            order.statusOrder = "Finished";
-            order.Date = DateTime.Now.ToUniversalTime();
-            _orderRepo.Update(order);
+           _orderRepo.Create(finalizedOrder);
 
             _orderRepo.Save();
 
