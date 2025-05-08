@@ -82,7 +82,7 @@ namespace Bookstore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Create([Bind("Id,Title,Price,ISBN,Description,PublishingDate,PublishingHouse, Authors, Genres, ImageFile")] BookDto bookDto)
+        public async Task<IActionResult> Create([Bind("Id,Title,Price,ISBN,Description,PublishingDate,PublishingHouse, Authors, Genres, ImageFile, Stock")] BookDto bookDto)
         {
             var book = mapBook(bookDto);
 
@@ -113,20 +113,20 @@ namespace Bookstore.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Price,ISBN,Description,PublishingDate,PublishingHouse, Authors, Genres, ImageFile")] BookDto bookDto)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Price,ISBN,Description,PublishingDate,PublishingHouse, Authors, Genres, ImageFile, Stock")] BookDto bookDto)
         {
             if (id != bookDto.Id)
             {
                 return NotFound();
             }
 
-            var book = mapBook(bookDto);
+            //var book = mapBook(bookDto);
 
             //if (ModelState.IsValid)
             //{
             try
             {
-               await _bookService.UpdateBookAsync(book);
+               await _bookService.UpdateBookAsync(bookDto);
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -198,6 +198,7 @@ namespace Bookstore.Controllers
                 AuthorsNames = b.AuthorBooks?.Select(ab => ab.Author?.Name ?? "").ToList() ?? [],
                 Genres = b.GenreBooks?.Select(bg => bg.Genre?.Id ?? 0).ToList() ?? [],
                 GenreTypes = b.GenreBooks?.Select(bg => bg.Genre?.Type ?? "").ToList() ?? [],
+                Stock = b.Stock,
             };
         }
         private Book mapBook(BookDto bookDto)
@@ -214,7 +215,8 @@ namespace Bookstore.Controllers
                 AuthorBooks = bookDto.Authors.Select(a => new AuthorBook() { IdAuthor = a}).ToList(),
                 GenreBooks = bookDto.Genres.Select(g => new GenreBook() { IdGenre = g }).ToList(),
                 BookImage = bookDto.BookImage,
-                ImageFile = bookDto.ImageFile
+                ImageFile = bookDto.ImageFile,
+                Stock = bookDto.Stock,
             };
         }
     }

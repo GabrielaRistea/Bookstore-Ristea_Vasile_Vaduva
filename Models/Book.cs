@@ -24,5 +24,6 @@ namespace Bookstore.Models
         public ICollection<AuthorBook> AuthorBooks { get; set; }
         public ICollection<GenreBook> GenreBooks { get; set; }
         public ICollection<WishlistBook> WishlistBooks { get; set; }
+        public int? Stock {  get; set; }
     }
 }

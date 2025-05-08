@@ -17,5 +17,6 @@ namespace Bookstore.DTOs
         [NotMapped]
         [Required(ErrorMessage = "An image is required.")]
         public IFormFile ImageFile { get; set; }
+        public int? Stock {  get; set; }
     }
 }

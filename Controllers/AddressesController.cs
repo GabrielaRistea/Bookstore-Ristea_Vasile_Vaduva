@@ -33,7 +33,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: Addresses
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult Index()
         {
             var userId = GetCurrentUserId();
@@ -61,7 +61,7 @@ namespace Bookstore.Controllers
         //}
 
         // GET: Addresses/Create
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult Create(string ReturnUrl)
         {
             if (!string.IsNullOrEmpty(ReturnUrl))
@@ -75,7 +75,7 @@ namespace Bookstore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult Create([Bind("Street,City,County,ZipCode,PhoneNumber")] Address address)
         {
             address.IdUser = GetCurrentUserId();
@@ -90,7 +90,7 @@ namespace Bookstore.Controllers
 
 
         // GET: Addresses/Edit/5
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult Edit(string ReturnUrl)
         {
             if (!string.IsNullOrEmpty(ReturnUrl))
@@ -107,7 +107,7 @@ namespace Bookstore.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult Edit([Bind("Id,Street,City,County,ZipCode,PhoneNumber")] Address address)
         {
             address.IdUser = GetCurrentUserId();
@@ -121,7 +121,7 @@ namespace Bookstore.Controllers
 
 
         // GET: Addresses/Delete/5
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult Delete(string ReturnUrl)
         {
             if (!string.IsNullOrEmpty(ReturnUrl))
@@ -137,7 +137,7 @@ namespace Bookstore.Controllers
         // POST: Addresses/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult DeleteConfirmed(int id)
         {
             var userId = GetCurrentUserId();

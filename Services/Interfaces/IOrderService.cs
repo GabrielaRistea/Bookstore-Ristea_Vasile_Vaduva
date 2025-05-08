@@ -16,5 +16,7 @@ namespace Bookstore.Services.Interfaces
         int MarkOrderAsFinished(Order order);
 
         string? GetUserEmailById(int userId);
+        void DecreaseStockForOrder(Order order);
+        List<string> ValidateStock(Order order);
     }
 }

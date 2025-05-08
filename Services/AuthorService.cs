@@ -90,7 +90,8 @@ namespace Bookstore.Services
             Id = ab.Book.Id,
             Title = ab.Book.Title,
             Price = ab.Book.Price,
-            BookImage = ab.Book.BookImage
+            BookImage = ab.Book.BookImage,
+            Stock = ab.Book.Stock,
         }).ToList() ?? new List<GroupBookDto>();
 
             return new AuthorDto

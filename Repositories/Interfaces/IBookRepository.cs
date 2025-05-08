@@ -1,4 +1,5 @@
 ﻿using Bookstore.Models;
+using System.Linq.Expressions;
 
 namespace Bookstore.Repositories.Interfaces
 {
@@ -20,6 +21,7 @@ namespace Bookstore.Repositories.Interfaces
         //List<Book> GetBookByAuthor(int authorId);
         //List<Book> GetBookByGenre(int genreId);
         Genre GetBookByGenre(int genreId);
+        IQueryable<Book> FindByCondition(Expression<Func<Book, bool>> expression);
 
     }
 }
