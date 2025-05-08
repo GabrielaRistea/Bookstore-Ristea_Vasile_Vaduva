@@ -12,5 +12,7 @@ namespace Bookstore.Repositories.Interfaces
         void Delete(Order order);
         void Save();
         string? GetUserEmailById(int userId);
+        Order? GetFinishedOrderById(int orderId);
+
     }
 }

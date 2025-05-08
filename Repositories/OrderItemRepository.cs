@@ -17,8 +17,17 @@ namespace Bookstore.Repositories
             _context.Set<OrderItem>().AsNoTracking();
         public IQueryable<OrderItem> FindByCondition(Expression<Func<OrderItem, bool>> expression) =>
             _context.Set<OrderItem>().Where(expression).AsNoTracking();
-        public void Add(OrderItem item) =>
+        public void Add(OrderItem item)
+        {
+            // Previne inserarea accidentală a unui Book deja existent
+            if (item.Book != null)
+            {
+                _context.Entry(item.Book).State = EntityState.Unchanged;
+            }
+
             _context.Set<OrderItem>().Add(item);
+        }
+
         public void Update(OrderItem item) =>
             _context.Set<OrderItem>().Update(item);
         public void Remove(OrderItem item) =>

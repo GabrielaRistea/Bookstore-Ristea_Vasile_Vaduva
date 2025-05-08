@@ -23,7 +23,6 @@ namespace Bookstore.Controllers
             _addressService = addressService;
         }
 
-        // Metodă privată pentru a extrage userId din claims
         public int GetCurrentUserId()
         {
             var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier);
