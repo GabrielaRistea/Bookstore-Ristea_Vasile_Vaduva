@@ -4,6 +4,23 @@
     ViewData["Title"] = "Add To Wishlist";
 }
 
+@if (TempData["SuccessMessage"] != null)
+{
+    <div id="successMessage" class="alert alert-success" role="alert">
+        @TempData["SuccessMessage"] <i class="fa-solid fa-check"></i>
+    </div>
+
+    <script>
+        // După 5 secunde (5000 ms), ascunde mesajul
+        setTimeout(function() {
+            var successMessage = document.getElementById('successMessage');
+            if (successMessage) {
+                successMessage.style.display = 'none';
+            }
+        }, 5000); // 5000ms = 5 secunde
+    </script>
+}
+
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
 
 <style>
@@ -122,9 +139,16 @@
                     </form>
                 </div>
 
+
+                <form asp-controller="Orders" asp-action="AddToCart" method="post" class="mt-auto">
+                    <input type="hidden" name="bookId" value="@item.Id" />
+                    <input type="hidden" name="quantity" value="1" />
                     <button type="submit" class="btn-add">
-                        <i class="fa fa-cart-plus"></i> Add to cart
+                        <i class="fas fa-shopping-cart"></i> Add to cart
                     </button>
+                </form>
+              
+                
             </div>
         }
     }

@@ -36,6 +36,16 @@ namespace Bookstore.Repositories
                            .Select(u => u.Email)
                            .FirstOrDefault();
         }
+        public Order? GetFinishedOrderById(int orderId)
+        {
+            return _context.Orders
+                .Include(o => o.OrderItems)
+                    .ThenInclude(oi => oi.Book)
+                .Where(o => o.statusOrder == "Finished" && o.Id == orderId)
+                .AsEnumerable()
+                .Where(o => o.OrderItems.Any(oi => oi.Book != null)) // doar comenzi valide
+                .FirstOrDefault();
+        }
 
     }
 }

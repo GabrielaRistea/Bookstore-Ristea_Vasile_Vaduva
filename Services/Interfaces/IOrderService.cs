@@ -13,7 +13,7 @@ namespace Bookstore.Services.Interfaces
 
         Order GetCartWithItems(int userId);
         Order? GetOrderById(int orderId);
-        int MarkOrderAsFinished(Order order);
+        int? MarkOrderAsFinished(Order order);
 
         string? GetUserEmailById(int userId);
     }
