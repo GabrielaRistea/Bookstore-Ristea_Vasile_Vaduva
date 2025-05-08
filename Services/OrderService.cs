@@ -12,13 +12,18 @@ namespace Bookstore.Services
         private readonly IOrderRepository _orderRepo;
         private readonly IOrderItemRepository _orderItemRepo;
         private readonly IHistoryRepository _historyRepo;
+        private readonly IBookRepository _bookRepo;
 
-        public OrderService(IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IHistoryRepository historyRepo)
+        public OrderService(IOrderRepository orderRepo, IOrderItemRepository orderItemRepo, IHistoryRepository historyRepo, IBookRepository bookRepo)
         {
             _orderRepo = orderRepo;
             _orderItemRepo = orderItemRepo;
             _historyRepo = historyRepo;
+            _bookRepo = bookRepo;
         }
+        
+
+        
 
         public Order GetOrCreateCart(int userId)
         {
@@ -90,23 +95,6 @@ namespace Bookstore.Services
             _orderItemRepo.Save();
         }
 
-        //public Order FinalizeOrder(int userId)
-        //{
-        //    var cart = _orderRepo.Orders
-        //        .Include(o => o.OrderItems)
-        //        .FirstOrDefault(o => o.IdUser == userId && !o.IsFinalized);
-
-        //    if (cart == null) return null;
-
-        //    cart.IsFinalized = true;
-        //    cart.OrderDate = DateTime.Now;
-        //    _orderRepo.Save();
-
-        //    return cart;
-        //}
-
-
-
         public Order GetCartWithItems(int userId)
         {
             return _orderRepo.FindByCondition(o => o.IdUser == userId && o.statusOrder == "Unfinished")
@@ -156,6 +144,10 @@ namespace Bookstore.Services
             };
 
             _orderRepo.Create(finalizedOrder);
+            order.statusOrder = "Finished";
+            order.Date = DateTime.Now.ToUniversalTime();
+            _orderRepo.Update(order);
+
             _orderRepo.Save();
 
             return finalizedOrder.Id;
@@ -164,6 +156,40 @@ namespace Bookstore.Services
         public string? GetUserEmailById(int userId)
         {
             return _orderRepo.GetUserEmailById(userId);
+        }
+
+        public void DecreaseStockForOrder(Order order)
+        {
+            foreach (var item in order.OrderItems)
+            {
+                var book = item.Book;
+                if (book != null && book.Stock >= item.Quantity)
+                {
+                    book.Stock -= item.Quantity;
+                    _bookRepo.Update(book);
+                }
+                else
+                {
+                   
+                }
+            }
+            _bookRepo.Save();
+        }
+
+        public List<string> ValidateStock(Order order)
+        {
+            var errors = new List<string>();
+
+            foreach (var item in order.OrderItems)
+            {
+                var book = item.Book;
+                if (book == null || book.Stock < item.Quantity)
+                {
+                    errors.Add($"Insufficient stock for „{book?.Title ?? "unknown book"}” (available: {book?.Stock ?? 0})");
+                }
+            }
+
+            return errors;
         }
 
 

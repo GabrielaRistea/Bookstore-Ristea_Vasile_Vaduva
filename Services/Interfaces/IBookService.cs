@@ -7,7 +7,7 @@ namespace Bookstore.Services.Interfaces
     {
         Book GetBookById(int id);
         Task AddBookAsync(Book book);
-        Task UpdateBookAsync(Book book);
+        Task UpdateBookAsync(BookDto bookDto);
         void DeleteBook(int id);
         List<Book> GetAllBooks();
         List<AuthorBook> GetAllAuthorBooks();

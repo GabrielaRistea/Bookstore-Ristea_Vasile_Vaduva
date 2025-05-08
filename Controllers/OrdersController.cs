@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Net.Mail;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Bookstore.Controllers
 {
@@ -32,7 +33,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: /Orders (Coșul de cumpărături)
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult Index()
         {
             var userId = GetCurrentUserId();
@@ -40,10 +41,12 @@ namespace Bookstore.Controllers
             return View(cart);
         }
 
+
+
         // POST: /Orders/AddToCart
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult AddToCart(int bookId, int quantity)
         {
             var userId = GetCurrentUserId();
@@ -60,7 +63,7 @@ namespace Bookstore.Controllers
         // POST: /Orders/RemoveFromCart
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult RemoveFromCart(int bookId)
         {
             var userId = GetCurrentUserId();
@@ -71,7 +74,7 @@ namespace Bookstore.Controllers
         // POST: /Orders/ClearCart
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult ClearCart()
         {
             var userId = GetCurrentUserId();
@@ -80,7 +83,7 @@ namespace Bookstore.Controllers
         }
 
         // GET: /Orders/Checkout
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult Checkout()
         {
             var userId = GetCurrentUserId();
@@ -93,10 +96,6 @@ namespace Bookstore.Controllers
             var address = _addressService.GetAddressByUserId(userId);
             ViewBag.Address = address; // o trimiți către view
 
-            //if (TempData["ReturnCheckoutUrl"] == null)
-            //{
-            //    TempData["ReturnCheckoutUrl"] = "/Orders/Checkout";
-            //}
 
             return View(cart);
         }
@@ -105,7 +104,7 @@ namespace Bookstore.Controllers
         // POST: /Orders/PlaceOrder
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult PlaceOrder(string DeliveryMethod, string PaymentMethod, string TotalPrice)
         {
             var userId = GetCurrentUserId();
@@ -117,11 +116,21 @@ namespace Bookstore.Controllers
             if (address == null)
                 return NotFound("Address not found.");
 
+            var stockErrors = _orderService.ValidateStock(cart);
+            if (stockErrors.Any())
+            {
+                TempData["StockErrors"] = string.Join("<br>", stockErrors);
+                return RedirectToAction("Checkout");
+            }
+
             var orderId = _orderService.MarkOrderAsFinished(cart);
+            _orderService.DecreaseStockForOrder(cart);
+
+
             return RedirectToAction("OrderConfirmation", "Orders", new { id = orderId });
         }
 
-        [Authorize(Roles = "user")]
+        [Authorize]
         public async Task<IActionResult> OrderConfirmation(int id)
         {
             var order = _orderService.GetOrderById(id);
@@ -137,18 +146,18 @@ namespace Bookstore.Controllers
             var itemDetails = string.Join("\n", order.OrderItems.Select(item => $"{item.Book.Title} (x{item.Quantity})"));
 
             var mailBody = $@"
-Thank you for your order!
+                Thank you for your order!
 
-Order Number: #{order.Id}
-Date: {date}
-Total: {total:0.00} Lei
-Delivery Address: {addressDetails}
+                Order Number: #{order.Id}
+                Date: {date}
+                Total: {total:0.00} Lei
+                Delivery Address: {addressDetails}
 
-Items ordered:
-{itemDetails}
+                Items ordered:
+                {itemDetails}
 
-We appreciate your trust in Bookstore!
-";
+                We appreciate your trust in Bookstore!
+                ";
 
             var mail = new MailMessage
             {
@@ -161,7 +170,7 @@ We appreciate your trust in Bookstore!
             if (!string.IsNullOrEmpty(userEmail))
             {
                 mail.To.Add(userEmail);
-                mail.From = new MailAddress("MS_lorIzz@test-69oxl5eex2xl785k.mlsender.net", "Bookstore App");
+                mail.From = new MailAddress("MS_1jRdlE@test-eqvygm003x8l0p7w.mlsender.net", "Bookstore App");
                 await _mailService.SendEmailAsync(mail);
             }
 
@@ -171,7 +180,7 @@ We appreciate your trust in Bookstore!
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult IncreaseQuantity(int bookId)
         {
             var userId = GetCurrentUserId();
@@ -181,7 +190,7 @@ We appreciate your trust in Bookstore!
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Authorize(Roles = "user")]
+        [Authorize]
         public IActionResult DecreaseQuantity(int bookId)
         {
             var userId = GetCurrentUserId();

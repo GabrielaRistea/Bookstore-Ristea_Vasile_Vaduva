@@ -33,5 +33,7 @@ namespace Bookstore.DTOs
         public ICollection<int> Authors { get; set; }
         [Required]
         public ICollection<string> AuthorsNames { get; set; }
+        [Required]
+        public int? Stock {  get; set; }
     }
 }

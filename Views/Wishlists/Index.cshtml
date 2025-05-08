@@ -139,16 +139,23 @@
                     </form>
                 </div>
 
-
                 <form asp-controller="Orders" asp-action="AddToCart" method="post" class="mt-auto">
                     <input type="hidden" name="bookId" value="@item.Id" />
                     <input type="hidden" name="quantity" value="1" />
-                    <button type="submit" class="btn-add">
-                        <i class="fas fa-shopping-cart"></i> Add to cart
-                    </button>
+
+                    @if (item.Book.Stock > 0)
+                    {
+                        <button type="submit" class="btn btn-outline-primary w-100">
+                            <i class="fas fa-shopping-cart"></i> Add to cart
+                        </button>
+                    }
+                    else
+                    {
+                        <button type="button" class="btn btn-secondary w-100" disabled>
+                            <i class="fas fa-ban"></i> Sold out
+                        </button>
+                    }
                 </form>
-              
-                
             </div>
         }
     }

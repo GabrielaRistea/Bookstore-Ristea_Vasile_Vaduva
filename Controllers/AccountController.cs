@@ -72,7 +72,7 @@ namespace Bookstore.Controllers
                         };
             welcomeEmail.To.Add(registerRequest.Email);
 
-            welcomeEmail.From = new MailAddress("MS_lorIzz@test-69oxl5eex2xl785k.mlsender.net", "Bookstore App");
+            welcomeEmail.From = new MailAddress("MS_1jRdlE@test-eqvygm003x8l0p7w.mlsender.net", "Bookstore App");
 
             await _mailService.SendEmailAsync(welcomeEmail);
 
@@ -174,7 +174,7 @@ namespace Bookstore.Controllers
 
             email.To.Add(resetCode.Email); // destinatarul
 
-            email.From = new MailAddress("MS_lorIzz@test-69oxl5eex2xl785k.mlsender.net", "Bookstore App");
+            email.From = new MailAddress("MS_1jRdlE@test-eqvygm003x8l0p7w.mlsender.net", "Bookstore App");
 
             await _mailService.SendEmailAsync(email);
 

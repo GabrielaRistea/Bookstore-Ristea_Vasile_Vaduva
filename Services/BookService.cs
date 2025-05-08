@@ -31,8 +31,11 @@ namespace Bookstore.Services
             _bookRepository.Create(book);
             _bookRepository.Save();
         }
-        public async Task UpdateBookAsync(Book book)
+        public async Task UpdateBookAsync(BookDto bookDto)
         {
+            var book = _bookRepository.GetById(bookDto.Id);
+            mapBook(bookDto, book);
+
             using var ms = new MemoryStream();
 
             if (book.ImageFile != null && book.ImageFile.Length > 0)
@@ -40,7 +43,9 @@ namespace Bookstore.Services
                 await book.ImageFile.CopyToAsync(ms);
                 book.BookImage = ms.ToArray();
             }
+            
             _bookRepository.Update(book);
+
             _bookRepository.Save();
         }
         public void DeleteBook(int id)
@@ -92,7 +97,8 @@ namespace Bookstore.Services
                 Id = ab.Book.Id,
                 Title = ab.Book.Title,
                 Price = ab.Book.Price,
-                BookImage = ab.Book.BookImage
+                BookImage = ab.Book.BookImage,
+                Stock = ab.Book.Stock,
             }).ToList() ?? new List<GroupBookDto>();
             return new GroupGenreDto
             {
@@ -102,6 +108,21 @@ namespace Bookstore.Services
                 BookTitle = books.Select(b => b.Title).ToList()
             };
         
+        }
+
+        private void mapBook(BookDto dto, Book book)
+        {
+            book.Title = dto.Title;
+            book.Price = dto.Price;
+            book.ISBN = dto.ISBN;
+            book.Description = dto.Description;
+            book.PublishingDate = dto.PublishingDate.ToUniversalTime();
+            book.PublishingHouse = dto.PublishingHouse;
+            book.BookImage = dto.BookImage;
+            book.ImageFile = dto.ImageFile;
+            book.AuthorBooks = dto.Authors.Select(a => new AuthorBook() { IdAuthor = a }).ToList();
+            book.GenreBooks = dto.Genres.Select(g => new GenreBook() { IdGenre = g }).ToList();
+            book.Stock = dto.Stock;
         }
     }
 }

@@ -3,6 +3,7 @@ using Bookstore.DTOs;
 using Bookstore.Models;
 using Bookstore.Repositories.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace Bookstore.Repositories
 {
@@ -86,6 +87,8 @@ namespace Bookstore.Repositories
                 .FirstOrDefault(a => a.Id == genreId);
         }
 
+        public IQueryable<Book> FindByCondition(Expression<Func<Book, bool>> expression) =>
+    _context.Books.Where(expression);
     }
 }
 
