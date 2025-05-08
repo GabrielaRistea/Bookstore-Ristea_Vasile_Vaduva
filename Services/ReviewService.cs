@@ -48,18 +48,5 @@ namespace Bookstore.Services
                       .Include(r => r.User)
                       .ToList();
         }
-
-        //public void CreateReview(ReviewDto reviewDto)
-        //{
-        //    var review = new Review
-        //    {
-        //        Comm = reviewDto.Comm,
-        //        Rating = reviewDto.Rating,
-        //        IdBook = reviewDto.IdBook,
-        //        IdUser = reviewDto.IdUser
-        //    };
-
-        //    _repository.AddReview(review);
-        //}
     }
 }

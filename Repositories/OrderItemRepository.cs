@@ -19,7 +19,7 @@ namespace Bookstore.Repositories
             _context.Set<OrderItem>().Where(expression).AsNoTracking();
         public void Add(OrderItem item)
         {
-            // Previne inserarea accidentală a unui Book deja existent
+            
             if (item.Book != null)
             {
                 _context.Entry(item.Book).State = EntityState.Unchanged;

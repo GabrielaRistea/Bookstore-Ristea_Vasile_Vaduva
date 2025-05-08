@@ -41,24 +41,6 @@ namespace Bookstore.Controllers
             return View(address);
         }
 
-        //// GET: Addresses/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var address = await _context.Addresses
-        //        .Include(a => a.User)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (address == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(address);
-        //}
 
         // GET: Addresses/Create
         [Authorize]
@@ -150,11 +132,5 @@ namespace Bookstore.Controllers
 
             return RedirectToAction("Index");
         }
-
-
-        //private bool AddressExists(int id)
-        //{
-        //    return _context.Addresses.Any(e => e.Id == id);
-        //}
     }
 }

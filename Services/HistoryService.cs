@@ -24,7 +24,7 @@ namespace Bookstore.Services
                 .AsEnumerable()
                 .Where(h => h.Orders.Any(o =>
                     o.OrderItems != null &&
-                    o.OrderItems.Any(oi => oi.Book != null))) // păstrează doar comenzile cu itemi valizi
+                    o.OrderItems.Any(oi => oi.Book != null))) 
                 .ToList();
         }
         public Order? GetFinishedOrderById(int orderId)
