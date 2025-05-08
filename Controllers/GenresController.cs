@@ -136,10 +136,5 @@ namespace Bookstore.Controllers
             //return View();
             return RedirectToAction("Index", "Home");
         }
-
-        //private bool GenreExists(int id)
-        //{
-        //    return _context.Genres.Any(e => e.Id == id);
-        //}
     }
 }

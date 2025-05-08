@@ -64,7 +64,7 @@ namespace Bookstore.Services
                     IdOrder = cart.Id,
                     IdBook = bookId,
                     Quantity = quantity,
-                    Book = null // foarte important!
+                    Book = null 
                 };
                 _orderItemRepo.Add(newItem);
             }
@@ -113,23 +113,23 @@ namespace Bookstore.Services
 
         public int? MarkOrderAsFinished(Order order)
         {
-            // Filtrare OrderItems - păstrează doar cele ale căror cărți nu au fost șterse
+            
             var validItems = order.OrderItems
                                   .Where(oi => oi.Book != null)
                                   .ToList();
 
-            // Dacă toate cărțile au fost șterse, nu salvăm nimic
+            
             if (!validItems.Any())
             {
                 return null;
             }
 
-            // DOAR acum creăm istoricul
+            
             var history = new HistoryOrders();
             _historyRepo.Create(history);
             _historyRepo.Save();
 
-            // Creează comanda finalizată
+            
             var finalizedOrder = new Order
             {
                 IdUser = order.IdUser,

@@ -32,7 +32,7 @@ namespace Bookstore.Controllers
             return int.Parse(userIdClaim.Value);
         }
 
-        // GET: /Orders (Coșul de cumpărături)
+        // GET: /Orders (cart)
         [Authorize]
         public IActionResult Index()
         {
@@ -52,10 +52,10 @@ namespace Bookstore.Controllers
             var userId = GetCurrentUserId();
             _orderService.AddToCart(userId, bookId, quantity);
 
-            // Setează mesajul de succes în TempData
+            
             TempData["SuccessMessage"] = "Book has been added to your cart!";
 
-            // Redirecționează înapoi la pagina de unde a venit utilizatorul
+            
             return Redirect(Request.Headers["Referer"].ToString());
         }
 
@@ -94,7 +94,7 @@ namespace Bookstore.Controllers
             }
 
             var address = _addressService.GetAddressByUserId(userId);
-            ViewBag.Address = address; // o trimiți către view
+            ViewBag.Address = address; 
 
 
             return View(cart);
@@ -184,7 +184,7 @@ namespace Bookstore.Controllers
         public IActionResult IncreaseQuantity(int bookId)
         {
             var userId = GetCurrentUserId();
-            _orderService.AddToCart(userId, bookId, 1); // Adaugă 1
+            _orderService.AddToCart(userId, bookId, 1); 
             return RedirectToAction(nameof(Index));
         }
 
@@ -202,7 +202,7 @@ namespace Bookstore.Controllers
             }
             else
             {
-                _orderService.RemoveFromCart(userId, bookId); // Dacă ajunge la 0, elimină complet
+                _orderService.RemoveFromCart(userId, bookId); 
             }
             return RedirectToAction(nameof(Index));
         }

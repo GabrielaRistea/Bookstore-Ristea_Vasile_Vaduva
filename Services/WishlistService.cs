@@ -27,7 +27,7 @@ namespace Bookstore.Services
                 _wishlistRepository.Create(wishlist);
                 _wishlistRepository.Save();
 
-                // ✅ Refetch pentru a obține Id-ul generat
+                
                 wishlist = _wishlistRepository.GetByUserId(userId);
             }
 
