@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Bookstore.Tests.ReviewServiceTests
 {
-    internal class ReviewServiceTests
+    internal class ReviewService_AddReview_Tests
     {
         private Mock<IReviewRepository> _mockRepository;
         private ReviewService _service;
