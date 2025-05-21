@@ -8,7 +8,7 @@ using System.Linq.Expressions;
 
 namespace Bookstore.Tests.GenreServiceTests;
 
-internal class GenreServiceTests
+internal class GenreService_AddGenre_Tests
 {
     private Mock<IGenreRepository> _mockRepository;
     private GenreService _service;
